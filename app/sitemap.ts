@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getPages } from "./lib/sheet";
 
-const BASE_URL = "https://cerulean-chimera-4964f1.netlify.app";
+const BASE_URL = "https://thesave-demolition.netlify.app";
 
 function toAbsoluteUrl(slug: string) {
   return `${BASE_URL}/${slug.replace(/^\/+/, "")}`;
