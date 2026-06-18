@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://example.com/sitemap.xml",
+    sitemap: "https://cerulean-chimera-4964f1.netlify.app/sitemap.xml",
   };
 }
