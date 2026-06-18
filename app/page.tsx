@@ -95,9 +95,34 @@ export default async function Home() {
 
       <section style={{ padding: "48px 24px", background: "#fafafa" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h2>서울 지역 철거 서비스</h2>
+          <div style={{ marginBottom: "28px" }}>
+            <h2
+              style={{
+                margin: "0 0 10px",
+                fontSize: "30px",
+                lineHeight: 1.25,
+                fontWeight: 800,
+                wordBreak: "keep-all",
+                overflowWrap: "break-word",
+              }}
+            >
+              지역별 철거 서비스 바로가기
+            </h2>
 
-          <p>원하시는 지역과 철거 서비스를 선택해 상담 안내 페이지를 확인해보세요</p>
+            <p
+              style={{
+                margin: 0,
+                maxWidth: "720px",
+                color: "#6b7280",
+                fontSize: "16px",
+                lineHeight: 1.7,
+                wordBreak: "keep-all",
+                overflowWrap: "break-word",
+              }}
+            >
+              아래에서 원하는 지역과 철거 서비스를 선택하면 해당 상담 안내 페이지로 이동할 수 있습니다.
+            </p>
+          </div>
 
           <style>
             {`
@@ -118,7 +143,6 @@ export default async function Home() {
             style={{
               display: "grid",
               gap: "20px",
-              marginTop: "28px",
             }}
           >
             {pagesByRegion.map(({ region, pages: regionPages }) => (
