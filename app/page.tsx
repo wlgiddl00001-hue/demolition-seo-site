@@ -2,7 +2,24 @@ import { getPages } from "./lib/sheet";
 
 export default async function Home() {
   const pages = await getPages();
-  const samplePages = pages.slice(0, 24);
+  const pagesByRegion = pages.reduce<
+    Array<{ region: string; pages: typeof pages }>
+  >((groups, page) => {
+    const region = page.지역.trim() || "기타 지역";
+    const group = groups.find((item) => item.region === region);
+
+    if (group) {
+      group.pages.push(page);
+    } else {
+      groups.push({ region, pages: [page] });
+    }
+
+    return groups;
+  }, []);
+
+  function toPageHref(slug: string) {
+    return `/${slug.replace(/^\/+/, "")}`;
+  }
 
   return (
     <main
@@ -76,8 +93,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <section style={{ padding: "48px 24px" }}>
-        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+      <section style={{ padding: "48px 24px", background: "#fafafa" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2>서울 지역 철거 서비스</h2>
 
           <p>원하시는 지역과 철거 서비스를 선택해 상담 안내 페이지를 확인해보세요</p>
@@ -85,9 +102,14 @@ export default async function Home() {
           <style>
             {`
               .home-service-card:hover {
-                border-color: #cbd5e1;
-                box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-                transform: translateY(-2px);
+                border-color: #9ca3af;
+                background: #f9fafb;
+                transform: translateY(-1px);
+              }
+
+              .home-region-section:hover {
+                border-color: #d1d5db;
+                box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
               }
             `}
           </style>
@@ -95,59 +117,73 @@ export default async function Home() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "16px",
-              marginTop: "24px",
+              gap: "20px",
+              marginTop: "28px",
             }}
           >
-            {samplePages.map((page) => (
-              <a
-                className="home-service-card"
-                key={page.URL슬러그}
-                href={`/${page.URL슬러그}`}
+            {pagesByRegion.map(({ region, pages: regionPages }) => (
+              <section
+                className="home-region-section"
+                key={region}
                 style={{
-                  display: "block",
-                  minHeight: "120px",
-                  padding: "22px",
+                  padding: "24px",
                   border: "1px solid #e5e7eb",
                   borderRadius: "12px",
-                  textDecoration: "none",
-                  color: "#111827",
                   background: "white",
                   boxSizing: "border-box",
-                  boxShadow: "0 8px 18px rgba(15, 23, 42, 0.04)",
-                  transition:
-                    "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
+                  transition: "border-color 160ms ease, box-shadow 160ms ease",
                 }}
               >
-                <strong
+                <h3
                   style={{
-                    display: "block",
-                    fontSize: "16px",
-                    lineHeight: 1.5,
+                    margin: "0 0 16px",
+                    fontSize: "22px",
+                    lineHeight: 1.35,
                     fontWeight: 800,
                     wordBreak: "keep-all",
                     overflowWrap: "break-word",
                   }}
                 >
-                  {page.페이지제목}
-                </strong>
+                  {region}
+                </h3>
 
-                <span
+                <div
                   style={{
-                    display: "inline-block",
-                    marginTop: "14px",
-                    padding: "5px 10px",
-                    borderRadius: "999px",
-                    background: "#f3f4f6",
-                    color: "#4b5563",
-                    fontSize: "13px",
-                    fontWeight: 700,
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+                    gap: "12px",
                   }}
                 >
-                  {page.지역} · {page.서비스}
-                </span>
-              </a>
+                  {regionPages.map((page) => (
+                    <a
+                      className="home-service-card"
+                      key={page.URL슬러그}
+                      href={toPageHref(page.URL슬러그)}
+                      style={{
+                        display: "flex",
+                        minHeight: "64px",
+                        alignItems: "center",
+                        padding: "14px 16px",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "8px",
+                        textDecoration: "none",
+                        color: "#111827",
+                        background: "#ffffff",
+                        boxSizing: "border-box",
+                        fontSize: "15px",
+                        fontWeight: 800,
+                        lineHeight: 1.45,
+                        wordBreak: "keep-all",
+                        overflowWrap: "break-word",
+                        transition:
+                          "border-color 160ms ease, background 160ms ease, transform 160ms ease",
+                      }}
+                    >
+                      {page.페이지제목}
+                    </a>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </div>
