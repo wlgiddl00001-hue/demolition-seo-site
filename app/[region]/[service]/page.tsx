@@ -12,8 +12,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, service } = await params;
   const pages = await getPages();
 
-  const slug = `${region}/${service}`;
-  const page = pages.find((item) => item.URL슬러그 === slug);
+  const slug = `/${region}/${service}`;
+const page = pages.find((item) => item.URL슬러그 === slug);
 
   if (!page) {
     return {
@@ -32,8 +32,8 @@ export default async function ServicePage({ params }: Props) {
   const { region, service } = await params;
   const pages = await getPages();
 
-  const slug = `${region}/${service}`;
-  const page = pages.find((item) => item.URL슬러그 === slug);
+   const slug = `/${region}/${service}`;
+const page = pages.find((item) => item.URL슬러그 === slug);
 
   if (!page) {
     return (
