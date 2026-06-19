@@ -53,7 +53,36 @@ export default async function ServicePage({ params }: Props) {
 
   const contentTitle =
     contentTitleVariants[slug.length % contentTitleVariants.length];
-  return (
+  const sectionTitleVariants = [
+  {
+    feature: `${page.지역} ${page.서비스} 현장에서 자주 확인하는 부분`,
+    scope: `${page.서비스} 작업 범위는 어디까지 포함될까?`,
+    process: `${page.지역} 현장 작업은 어떤 순서로 진행될까?`,
+    cost: `${page.서비스} 견적이 달라지는 주요 기준`,
+    caution: `${page.지역} ${page.서비스} 작업 전 미리 볼 사항`,
+    faq: `${page.지역} ${page.서비스} 자주 묻는 질문`,
+  },
+  {
+    feature: `${page.서비스} 현장별 주요 특징`,
+    scope: `${page.지역} ${page.서비스} 철거 범위 정리`,
+    process: `방문 확인부터 원상복구까지 진행 흐름`,
+    cost: `비용을 결정하는 현장 조건`,
+    caution: `작업 전 확인해야 할 관리 기준`,
+    faq: `${page.서비스} 상담 전 많이 묻는 질문`,
+  },
+  {
+    feature: `${page.지역} ${page.서비스} 현장 체크사항`,
+    scope: `철거와 원상복구가 필요한 부분`,
+    process: `${page.서비스} 작업 진행 방식`,
+    cost: `${page.지역} 현장 견적 산정 포인트`,
+    caution: `추가 비용을 줄이기 위한 확인사항`,
+    faq: `${page.지역} ${page.서비스} FAQ`,
+  },
+];
+
+const sectionTitles =
+  sectionTitleVariants[slug.length % sectionTitleVariants.length];
+    return (
     <main
       style={{
         fontFamily: "Arial, sans-serif",
@@ -278,22 +307,82 @@ export default async function ServicePage({ params }: Props) {
 >
   <p>{page.도입문}</p>
 
-  <h3 style={{ marginTop: "32px" }}>현장 특징</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.feature}
+</h3>
   <p>{page.현장특징}</p>
 
-  <h3 style={{ marginTop: "32px" }}>철거 범위</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.scope}
+</h3>
   <p>{page.철거범위}</p>
 
-  <h3 style={{ marginTop: "32px" }}>진행 절차</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.process}
+</h3>
   <p>{page.진행절차}</p>
 
-  <h3 style={{ marginTop: "32px" }}>비용 안내</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.cost}
+</h3>
   <p>{page.비용안내}</p>
 
-  <h3 style={{ marginTop: "32px" }}>주의사항</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.caution}
+</h3>
   <p>{page.주의사항}</p>
 
-  <h3 style={{ marginTop: "32px" }}>자주 묻는 질문</h3>
+  <h3
+  style={{
+    marginTop: "36px",
+    marginBottom: "10px",
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.4,
+  }}
+>
+  {sectionTitles.faq}
+</h3>
 
   <div style={{ marginTop: "16px" }}>
     <strong>Q. {page.FAQ1질문}</strong>
