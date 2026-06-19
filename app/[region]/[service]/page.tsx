@@ -43,7 +43,16 @@ export default async function ServicePage({ params }: Props) {
       </main>
     );
   }
+  const contentTitleVariants = [
+    `${page.지역} ${page.서비스} 현장 체크포인트`,
+    `${page.지역} ${page.서비스} 원상복구 핵심 정리`,
+    `${page.지역} ${page.서비스} 작업 전 확인사항`,
+    `${page.지역} ${page.서비스} 철거 범위와 진행 기준`,
+    `${page.지역} ${page.서비스} 맞춤 원상복구 포인트`,
+  ];
 
+  const contentTitle =
+    contentTitleVariants[slug.length % contentTitleVariants.length];
   return (
     <main
       style={{
@@ -247,7 +256,17 @@ export default async function ServicePage({ params }: Props) {
             />
           </div>
 
-         <h2 style={{ marginTop: "48px" }}>현장별 맞춤 원상복구 안내</h2>
+         <h2
+  style={{
+    marginTop: "48px",
+    textAlign: "center",
+    fontSize: "28px",
+    fontWeight: 800,
+    lineHeight: 1.35,
+  }}
+>
+  {contentTitle}
+</h2>
 
 <div
   style={{
