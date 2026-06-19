@@ -1,7 +1,8 @@
 import Papa from "papaparse";
 
 export const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/1tLIZmInSrdBrRsQHesxVlkarb8IwiKNvoYg5YYVOVEE/gviz/tq?tqx=out:csv&sheet=페이지생성";
+  
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOv6fTn3PBHiV5XBAoz824rgYAwRyU1tfd1-aGrl2Gj8MDHnxAlhwT0-h97ZPc-YTRvyYgOaVumN12/pub?gid=2141467093&single=true&output=csv";
 
 export type PageData = {
   지역: string;
