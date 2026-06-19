@@ -13,6 +13,18 @@ export type PageData = {
   H1: string;
   메타설명: string;
   본문요약: string;
+    도입문: string;
+  현장특징: string;
+  철거범위: string;
+  진행절차: string;
+  비용안내: string;
+  주의사항: string;
+  FAQ1질문: string;
+  FAQ1답변: string;
+  FAQ2질문: string;
+  FAQ2답변: string;
+  FAQ3질문: string;
+  FAQ3답변: string;
 };
 
 export async function getPages(): Promise<PageData[]> {

@@ -247,6 +247,50 @@ export default async function ServicePage({ params }: Props) {
             />
           </div>
 
+         <h2 style={{ marginTop: "48px" }}>현장별 맞춤 원상복구 안내</h2>
+
+<div
+  style={{
+    maxWidth: "760px",
+    margin: "20px auto 0",
+    fontSize: "17px",
+    lineHeight: 1.8,
+  }}
+>
+  <p>{page.도입문}</p>
+
+  <h3 style={{ marginTop: "32px" }}>현장 특징</h3>
+  <p>{page.현장특징}</p>
+
+  <h3 style={{ marginTop: "32px" }}>철거 범위</h3>
+  <p>{page.철거범위}</p>
+
+  <h3 style={{ marginTop: "32px" }}>진행 절차</h3>
+  <p>{page.진행절차}</p>
+
+  <h3 style={{ marginTop: "32px" }}>비용 안내</h3>
+  <p>{page.비용안내}</p>
+
+  <h3 style={{ marginTop: "32px" }}>주의사항</h3>
+  <p>{page.주의사항}</p>
+
+  <h3 style={{ marginTop: "32px" }}>자주 묻는 질문</h3>
+
+  <div style={{ marginTop: "16px" }}>
+    <strong>Q. {page.FAQ1질문}</strong>
+    <p>A. {page.FAQ1답변}</p>
+  </div>
+
+  <div style={{ marginTop: "16px" }}>
+    <strong>Q. {page.FAQ2질문}</strong>
+    <p>A. {page.FAQ2답변}</p>
+  </div>
+
+  <div style={{ marginTop: "16px" }}>
+    <strong>Q. {page.FAQ3질문}</strong>
+    <p>A. {page.FAQ3답변}</p>
+  </div>
+</div> 
           <h2>상담 전 확인하면 좋은 사항</h2>
 
           <div
