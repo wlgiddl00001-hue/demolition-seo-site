@@ -54,11 +54,11 @@ export default async function Home() {
               margin: "0 0 16px",
             }}
           >
-            서울 철거 · 원상복구 전문 상담
+            전국 원상복구 철거업체 찾기
           </h1>
 
           <p style={{ margin: "0 auto", fontSize: "18px", maxWidth: "760px" }}>
-            서울 주요 지역의 철거, 원상복구, 폐기물 처리 상담 정보를 확인해보세요.
+            식당, 학원, 사무실, 상가 등 업종별 원상복구 철거 정보를 지역별로 한눈에 확인해보세요.
           </p>
 
           <a
