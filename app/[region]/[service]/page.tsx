@@ -84,13 +84,71 @@ const sectionTitles =
   sectionTitleVariants[slug.length % sectionTitleVariants.length];
     return (
     <main
+      className="service-page"
       style={{
         fontFamily: "Arial, sans-serif",
         lineHeight: 1.6,
         color: "#111827",
       }}
     >
+      <style>
+        {`
+          @media (max-width: 1024px), (prefers-color-scheme: dark) {
+            .service-page {
+              background: #111827 !important;
+              color: #cbd5e1 !important;
+            }
+
+            .service-page-hero {
+              background: #111827 !important;
+              border-bottom-color: #1f2937 !important;
+              color: #f8fafc !important;
+            }
+
+            .service-page-eyebrow {
+              color: #94a3b8 !important;
+            }
+
+            .service-page-hero-title,
+            .service-page-section-title,
+            .service-page-content-title,
+            .service-page-prose h3 {
+              color: #ffffff !important;
+            }
+
+            .service-page-hero-description,
+            .service-page-intro,
+            .service-page-prose,
+            .service-page-prose p {
+              color: #cbd5e1 !important;
+            }
+
+            .service-page-body {
+              background: #111827 !important;
+              color: #cbd5e1 !important;
+            }
+
+            .service-page-check-card {
+              background: #ffffff !important;
+              color: #111827 !important;
+            }
+
+            .service-page-check-card p {
+              color: #6b7280 !important;
+            }
+
+            .service-page .service-page-body .service-page-intro-title {
+              color: #ffffff !important;
+            }
+
+            .service-page .service-page-body .service-page-intro-copy {
+              color: #cbd5e1 !important;
+            }
+          }
+        `}
+      </style>
       <section
+        className="service-page-hero"
         style={{
           padding: "64px 24px",
           background: "#f3f4f6",
@@ -105,11 +163,15 @@ const sectionTitles =
             textAlign: "center",
           }}
         >
-          <p style={{ marginBottom: "12px", color: "#6b7280" }}>
+          <p
+            className="service-page-eyebrow"
+            style={{ marginBottom: "12px", color: "#6b7280" }}
+          >
             {page.지역} · {page.서비스}
           </p>
 
           <h1
+            className="service-page-hero-title"
             style={{
               fontSize: "40px",
               lineHeight: 1.2,
@@ -119,7 +181,10 @@ const sectionTitles =
             {page.H1}
           </h1>
 
-          <p style={{ margin: "0 auto", fontSize: "18px", maxWidth: "760px" }}>
+          <p
+            className="service-page-hero-description"
+            style={{ margin: "0 auto", fontSize: "18px", maxWidth: "760px" }}
+          >
             {page.본문요약}
           </p>
 
@@ -155,7 +220,7 @@ const sectionTitles =
         </div>
       </section>
 
-      <section style={{ padding: "48px 24px" }}>
+      <section className="service-page-body" style={{ padding: "48px 24px" }}>
         <div style={{ width: "100%", maxWidth: "960px", margin: "0 auto" }}>
           <img
             src="/service-banner.png"
@@ -171,11 +236,15 @@ const sectionTitles =
             }}
           />
 
-          <h2 style={{ textAlign: "center" }}>
+          <h2
+            className="service-page-section-title service-page-intro-title"
+            style={{ textAlign: "center" }}
+          >
             {page.메인키워드} 상담 안내
           </h2>
 
           <p
+            className="service-page-intro service-page-intro-copy"
             style={{
               maxWidth: "760px",
               margin: "0 auto",
@@ -188,6 +257,7 @@ const sectionTitles =
           </p>
 
           <p
+            className="service-page-intro service-page-intro-copy"
             style={{
               maxWidth: "760px",
               margin: "16px auto 0",
@@ -286,6 +356,7 @@ const sectionTitles =
           </div>
 
          <h2
+  className="service-page-content-title"
   style={{
     marginTop: "48px",
     textAlign: "center",
@@ -298,6 +369,7 @@ const sectionTitles =
 </h2>
 
 <div
+  className="service-page-prose"
   style={{
     maxWidth: "760px",
     margin: "20px auto 0",
@@ -399,7 +471,7 @@ const sectionTitles =
     <p>A. {page.FAQ3답변}</p>
   </div>
 </div> 
-          <h2>상담 전 확인하면 좋은 사항</h2>
+          <h2 className="service-page-section-title">상담 전 확인하면 좋은 사항</h2>
 
           <div
             style={{
@@ -410,6 +482,7 @@ const sectionTitles =
             }}
           >
             <div
+              className="service-page-check-card"
               style={{
                 padding: "20px",
                 border: "1px solid #e5e7eb",
@@ -424,6 +497,7 @@ const sectionTitles =
             </div>
 
             <div
+              className="service-page-check-card"
               style={{
                 padding: "20px",
                 border: "1px solid #e5e7eb",
@@ -438,6 +512,7 @@ const sectionTitles =
             </div>
 
             <div
+              className="service-page-check-card"
               style={{
                 padding: "20px",
                 border: "1px solid #e5e7eb",
@@ -452,6 +527,7 @@ const sectionTitles =
             </div>
 
             <div
+              className="service-page-check-card"
               style={{
                 padding: "20px",
                 border: "1px solid #e5e7eb",
