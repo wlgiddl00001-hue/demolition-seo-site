@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import MobileBottomCTA from "./components/MobileBottomCTA";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -53,7 +54,10 @@ export default function RootLayout({
         <meta property="og:site_name" content="더세이브 철거 원상복구" />
         <meta property="og:type" content="website" />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col pb-24 md:pb-0">
+        {children}
+        <MobileBottomCTA />
+      </body>
     </html>
   );
 }
