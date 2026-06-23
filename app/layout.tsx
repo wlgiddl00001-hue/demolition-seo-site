@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "더세이브 철거 원상복구",
   description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
+  verification: {
+    other: {
+      "naver-site-verification":
+        "cb15b83f5c7e89d843b9dbba7b718b6cbc2b7dae",
+    },
+  },
 };
 
 export default function RootLayout({
