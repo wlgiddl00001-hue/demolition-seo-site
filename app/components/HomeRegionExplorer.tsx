@@ -23,6 +23,17 @@ type ServicePage = {
   페이지제목: string;
 };
 
+type RouteResolvableServicePage = ServicePage & {
+  href: string;
+};
+
+type VisibleRegionGroup = {
+  anchorSlug: string;
+  district: string;
+  region: string;
+  pages: RouteResolvableServicePage[];
+};
+
 export type PagesByRegion = Array<{
   region: string;
   pages: ServicePage[];
@@ -75,6 +86,9 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "하남",
     "광명",
     "군포",
+    "의왕",
+    "오산",
+    "이천",
   ],
   인천: [],
   부산: [],
@@ -89,8 +103,124 @@ const districtsByRegion: Record<Region, readonly string[]> = {
 
 const pendingMessage = "해당 지역 정보는 순차적으로 추가될 예정입니다.";
 
-function toPageHref(slug: string) {
-  return `/${slug.replace(/^\/+/, "")}`;
+const districtAnchorSlugs: Record<string, string> = {
+  강남구: "gangnam",
+  강동구: "gangdong",
+  강북구: "gangbuk",
+  강서구: "gangseo",
+  관악구: "gwanak",
+  광진구: "gwangjin",
+  구로구: "guro",
+  금천구: "geumcheon",
+  노원구: "nowon",
+  도봉구: "dobong",
+  동대문구: "dongdaemun",
+  동작구: "dongjak",
+  마포구: "mapo",
+  서대문구: "seodaemun",
+  서초구: "seocho",
+  성동구: "seongdong",
+  성북구: "seongbuk",
+  송파구: "songpa",
+  양천구: "yangcheon",
+  영등포구: "yeongdeungpo",
+  용산구: "yongsan",
+  은평구: "eunpyeong",
+  종로구: "jongno",
+  중구: "jung",
+  중랑구: "jungnang",
+  수원: "suwon",
+  고양: "goyang",
+  용인: "yongin",
+  성남: "seongnam",
+  화성: "hwaseong",
+  부천: "bucheon",
+  남양주: "namyangju",
+  안산: "ansan",
+  평택: "pyeongtaek",
+  안양: "anyang",
+  시흥: "siheung",
+  파주: "paju",
+  김포: "gimpo",
+  의정부: "uijeongbu",
+  광주: "gwangju",
+  하남: "hanam",
+  광명: "gwangmyeong",
+  군포: "gunpo",
+  의왕: "uiwang",
+  오산: "osan",
+  이천: "icheon",
+};
+
+function normalizeRegionName(region: string) {
+  return region.trim().replace(/\s+/g, "");
+}
+
+function normalizeRegionNameForMatch(region: string) {
+  return normalizeRegionName(region).replace(/(특별시|광역시|특례시|시|군|구)$/, "");
+}
+
+function findRegionPages(pagesByRegion: PagesByRegion, district: string) {
+  const normalizedDistrict = normalizeRegionName(district);
+  const exactMatch = pagesByRegion.find(
+    ({ region }) => normalizeRegionName(region) === normalizedDistrict,
+  );
+
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const relaxedDistrict = normalizeRegionNameForMatch(district);
+
+  const relaxedMatch = pagesByRegion.find(
+    ({ region }) => normalizeRegionNameForMatch(region) === relaxedDistrict,
+  );
+
+  if (relaxedMatch) {
+    return relaxedMatch;
+  }
+
+  return pagesByRegion.find(({ region }) => {
+    const normalizedRegion = normalizeRegionName(region);
+    const relaxedRegion = normalizeRegionNameForMatch(region);
+
+    return (
+      normalizedRegion.endsWith(normalizedDistrict) ||
+      relaxedRegion.endsWith(relaxedDistrict)
+    );
+  });
+}
+
+function toPageHref(pageSlug: string) {
+  const trimmedSlug = pageSlug.trim();
+
+  if (!trimmedSlug) {
+    return null;
+  }
+
+  const href = trimmedSlug.startsWith("/") ? trimmedSlug : "/" + trimmedSlug;
+  const pathSegments = href.replace(/^\/+|\/+$/g, "").split("/");
+  const isEnglishDetailSlug =
+    pathSegments.length === 2 &&
+    pathSegments.every((segment) => /^[a-z0-9-]+$/.test(segment));
+
+  return isEnglishDetailSlug ? href : null;
+}
+
+function getRouteResolvablePages(pages: ServicePage[]) {
+  return pages.reduce<RouteResolvableServicePage[]>((linkablePages, page) => {
+    const href = toPageHref(page.URL슬러그);
+
+    if (href) {
+      linkablePages.push({ ...page, href });
+    }
+
+    return linkablePages;
+  }, []);
+}
+
+function getDistrictAnchorSlug(district: string) {
+  return districtAnchorSlugs[district] ?? normalizeRegionNameForMatch(district);
 }
 
 export default function HomeRegionExplorer({
@@ -104,9 +234,54 @@ export default function HomeRegionExplorer({
   const districtHeading = hasDistricts
     ? `${selectedRegion} 지역 보기`
     : "지역 정보 준비중";
-  const visibleRegionGroups = pagesByRegion.filter(({ region }) =>
-    districts.includes(region),
+  const visibleRegionGroups = districts.flatMap<VisibleRegionGroup>((district) => {
+    const regionPages = findRegionPages(pagesByRegion, district);
+
+    if (!regionPages) {
+      return [];
+    }
+
+    const anchorSlug = getDistrictAnchorSlug(district);
+    const routeResolvablePages = getRouteResolvablePages(regionPages.pages);
+
+    return [
+      {
+        anchorSlug,
+        district,
+        region: regionPages.region,
+        pages: routeResolvablePages,
+      },
+    ];
+  });
+  const sectionAnchorSlugByDistrict = new Map(
+    visibleRegionGroups.map(({ anchorSlug, district }) => [
+      district,
+      anchorSlug,
+    ]),
   );
+
+  const handlePendingDistrictClick = () => {
+    alert(pendingMessage);
+  };
+
+  const handleDistrictScroll = (slug?: string) => {
+    if (!slug) {
+      handlePendingDistrictClick();
+      return;
+    }
+
+    const sectionId = `region-${slug}`;
+    const section = document.getElementById(sectionId);
+
+    document.getElementById(`region-${slug}`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    if (!section) {
+      handlePendingDistrictClick();
+    }
+  };
 
   return (
     <>
@@ -125,7 +300,10 @@ export default function HomeRegionExplorer({
             textAlign: "center",
           }}
         >
-          <p style={{ color: "#6b7280", marginBottom: "12px" }}>
+          <p
+            className="home-hero-eyebrow"
+            style={{ color: "#6b7280", marginBottom: "12px" }}
+          >
             철거 · 원상복구 · 폐기물 처리
           </p>
 
@@ -182,6 +360,7 @@ export default function HomeRegionExplorer({
 
             <div className="hero-region-selector">
               <p
+                className="hero-region-label"
                 style={{
                   margin: "0 0 12px",
                   color: "#6b7280",
@@ -210,6 +389,7 @@ export default function HomeRegionExplorer({
 
             <div className="hero-district-card" aria-live="polite">
               <h2
+                className="hero-district-heading"
                 style={{
                   margin: "0 0 12px",
                   color: "#374151",
@@ -221,14 +401,26 @@ export default function HomeRegionExplorer({
 
               {hasDistricts ? (
                 <div className="hero-district-chips">
-                  {districts.map((district) => (
-                    <span className="hero-district-chip" key={district}>
-                      {district}
-                    </span>
-                  ))}
+                  {districts.map((district) => {
+                    const anchorSlug = sectionAnchorSlugByDistrict.get(district);
+
+                    return (
+                      <button
+                        className="hero-district-chip"
+                        key={district}
+                        type="button"
+                        onClick={() => handleDistrictScroll(anchorSlug)}
+                      >
+                        {district}
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
-                <p style={{ margin: 0, color: "#6b7280" }}>
+                <p
+                  className="hero-district-pending"
+                  style={{ margin: 0, color: "#6b7280" }}
+                >
                   {pendingMessage}
                 </p>
               )}
@@ -242,7 +434,7 @@ export default function HomeRegionExplorer({
         style={{ padding: "48px 24px", background: "#fafafa" }}
       >
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "28px" }}>
+          <div className="home-services-header" style={{ marginBottom: "28px" }}>
             <h2
               className="home-services-title"
               style={{
@@ -258,6 +450,7 @@ export default function HomeRegionExplorer({
             </h2>
 
             <p
+              className="home-services-description"
               style={{
                 margin: 0,
                 maxWidth: "720px",
@@ -280,9 +473,10 @@ export default function HomeRegionExplorer({
             }}
           >
             {hasDistricts ? (
-              visibleRegionGroups.map(({ region, pages: regionPages }) => (
+              visibleRegionGroups.map(({ anchorSlug, region, pages: regionPages }) => (
                 <section
                   className="home-region-section"
+                  id={`region-${anchorSlug}`}
                   key={region}
                   style={{
                     padding: "24px",
@@ -307,48 +501,68 @@ export default function HomeRegionExplorer({
                     {region}
                   </h3>
 
-                  <div
-                    className="home-service-grid"
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(210px, 1fr))",
-                      gap: "12px",
-                    }}
-                  >
-                    {regionPages.map((page) => (
-                      <a
-                        className="home-service-card"
-                        key={page.URL슬러그}
-                        href={toPageHref(page.URL슬러그)}
-                        style={{
-                          display: "flex",
-                          minHeight: "64px",
-                          alignItems: "center",
-                          padding: "14px 16px",
-                          border: "1px solid #e5e7eb",
-                          borderRadius: "8px",
-                          textDecoration: "none",
-                          color: "#111827",
-                          background: "#ffffff",
-                          boxSizing: "border-box",
-                          fontSize: "15px",
-                          fontWeight: 800,
-                          lineHeight: 1.45,
-                          wordBreak: "keep-all",
-                          overflowWrap: "break-word",
-                          transition:
-                            "border-color 160ms ease, background 160ms ease, transform 160ms ease",
-                        }}
-                      >
-                        {page.페이지제목}
-                      </a>
-                    ))}
-                  </div>
+                  {regionPages.length > 0 ? (
+                    <div
+                      className="home-service-grid"
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(210px, 1fr))",
+                        gap: "12px",
+                      }}
+                    >
+                      {regionPages.map((page) => (
+                        <a
+                          className="home-service-card"
+                          key={page.URL슬러그}
+                          href={page.href}
+                          style={{
+                            display: "flex",
+                            minHeight: "64px",
+                            alignItems: "center",
+                            padding: "14px 16px",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "8px",
+                            textDecoration: "none",
+                            color: "#111827",
+                            background: "#ffffff",
+                            boxSizing: "border-box",
+                            fontSize: "15px",
+                            fontWeight: 800,
+                            lineHeight: 1.45,
+                            wordBreak: "keep-all",
+                            overflowWrap: "break-word",
+                            transition:
+                              "border-color 160ms ease, background 160ms ease, transform 160ms ease",
+                          }}
+                        >
+                          {page.페이지제목}
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div
+                      className="home-region-pending"
+                      style={{
+                        padding: "18px 16px",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "8px",
+                        background: "#ffffff",
+                        color: "#6b7280",
+                        boxSizing: "border-box",
+                        fontSize: "15px",
+                        fontWeight: 700,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {pendingMessage}
+                    </div>
+                  )}
                 </section>
               ))
             ) : (
               <div
+                className="home-services-pending"
                 style={{
                   padding: "32px 24px",
                   border: "1px solid #e5e7eb",
@@ -438,9 +652,20 @@ export default function HomeRegionExplorer({
               border: 1px solid #e5e7eb;
               background: #ffffff;
               color: #4b5563;
+              cursor: pointer;
+              font: inherit;
               font-size: 12px;
               font-weight: 600;
               line-height: 1.4;
+              text-decoration: none;
+              transition: border-color 160ms ease, color 160ms ease,
+                background 160ms ease;
+            }
+
+            button.hero-district-chip:hover {
+              border-color: #9ca3af;
+              background: #f9fafb;
+              color: #111827;
             }
 
             .home-service-card:hover {
@@ -454,19 +679,28 @@ export default function HomeRegionExplorer({
               box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
             }
 
-            @media (max-width: 640px) {
+            @media (max-width: 768px) {
               .home-hero-section {
                 padding: 56px 18px 64px !important;
+                background: #111827 !important;
+                border-bottom-color: #1f2937 !important;
+                color: #f8fafc !important;
+              }
+
+              .home-hero-eyebrow {
+                color: #e2e8f0 !important;
               }
 
               .home-hero-title {
                 margin-bottom: 14px !important;
+                color: #ffffff !important;
                 font-size: 32px !important;
                 line-height: 1.25 !important;
                 word-break: keep-all;
               }
 
               .home-hero-description {
+                color: #cbd5e1 !important;
                 font-size: 16px !important;
                 line-height: 1.65;
                 word-break: keep-all;
@@ -494,6 +728,12 @@ export default function HomeRegionExplorer({
               .hero-region-selector {
                 margin-top: 24px;
                 padding: 16px;
+                background: rgba(255, 255, 255, 0.94);
+                color: #111827 !important;
+              }
+
+              .hero-region-label {
+                color: #475569 !important;
               }
 
               .hero-region-buttons {
@@ -509,6 +749,16 @@ export default function HomeRegionExplorer({
 
               .hero-district-card {
                 padding: 14px;
+                background: rgba(255, 255, 255, 0.94);
+                color: #111827 !important;
+              }
+
+              .hero-district-heading {
+                color: #1f2937 !important;
+              }
+
+              .hero-district-pending {
+                color: #475569 !important;
               }
 
               .hero-district-chip {
@@ -522,14 +772,42 @@ export default function HomeRegionExplorer({
 
               .home-services-section {
                 padding: 40px 18px !important;
+                background: #111827 !important;
+                color: #f8fafc !important;
+              }
+
+              .home-services-header {
+                color: #f8fafc !important;
               }
 
               .home-services-title {
+                color: #ffffff !important;
                 font-size: 26px !important;
+              }
+
+              .home-services-description {
+                color: #cbd5e1 !important;
+              }
+
+              .home-services-section > div > div[aria-live="polite"] {
+                color: #f8fafc !important;
               }
 
               .home-region-section {
                 padding: 20px !important;
+                background: #ffffff !important;
+                color: #111827 !important;
+              }
+
+              .home-region-section h3 {
+                color: #111827 !important;
+              }
+
+              .home-region-section,
+              .home-region-section p,
+              .home-region-section span,
+              .home-region-section strong {
+                color: #111827 !important;
               }
 
               .home-service-grid {
@@ -538,7 +816,19 @@ export default function HomeRegionExplorer({
 
               .home-service-card {
                 width: 100%;
+                background: #ffffff !important;
+                color: #111827 !important;
                 overflow-wrap: anywhere !important;
+              }
+
+              .home-services-pending {
+                background: #ffffff !important;
+                color: #475569 !important;
+              }
+
+              .home-region-pending {
+                background: #ffffff !important;
+                color: #475569 !important;
               }
             }
 
