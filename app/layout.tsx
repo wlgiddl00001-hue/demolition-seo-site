@@ -15,6 +15,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "더세이브 철거 원상복구",
   description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
+  openGraph: {
+    title: "더세이브 철거 원상복구",
+    description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
+    url: "https://thesave-demolition.netlify.app",
+    siteName: "더세이브 철거 원상복구",
+    type: "website",
+  },
   verification: {
     other: {
       "naver-site-verification":
@@ -30,9 +37,22 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta property="og:title" content="더세이브 철거 원상복구" />
+        <meta
+          property="og:description"
+          content="서울 지역 철거, 원상복구, 폐기물 처리 상담 안내"
+        />
+        <meta
+          property="og:url"
+          content="https://thesave-demolition.netlify.app"
+        />
+        <meta property="og:site_name" content="더세이브 철거 원상복구" />
+        <meta property="og:type" content="website" />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
