@@ -82,16 +82,39 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "파주",
     "김포",
     "의정부",
-    "광주",
-    "하남",
     "광명",
+    "경기광주",
+    "하남",
     "군포",
     "의왕",
     "오산",
     "이천",
   ],
-  인천: [],
-  부산: [],
+  인천: [
+    "인천중구",
+    "인천동구",
+    "인천미추홀구",
+    "인천연수구",
+    "인천남동구",
+    "인천부평구",
+    "인천계양구",
+    "인천서구",
+  ],
+  부산: [
+    "부산영도구",
+    "부산부산진구",
+    "부산동래구",
+    "부산남구",
+    "부산북구",
+    "부산해운대구",
+    "부산사하구",
+    "부산금정구",
+    "부산강서구",
+    "부산연제구",
+    "부산수영구",
+    "부산사상구",
+    "부산기장군",
+  ],
   대구: [],
   대전: [],
   광주: [],
@@ -223,6 +246,10 @@ function getDistrictAnchorSlug(district: string) {
   return districtAnchorSlugs[district] ?? normalizeRegionNameForMatch(district);
 }
 
+function getDisplayRegionName(region: string) {
+  return region.replace(/부산부산진구/g, "부산진구");
+}
+
 export default function HomeRegionExplorer({
   pagesByRegion,
 }: {
@@ -232,7 +259,7 @@ export default function HomeRegionExplorer({
   const districts = districtsByRegion[selectedRegion];
   const hasDistricts = districts.length > 0;
   const districtHeading = hasDistricts
-    ? `${selectedRegion} 지역 보기`
+    ? `${getDisplayRegionName(selectedRegion)} 지역 보기`
     : "지역 정보 준비중";
   const visibleRegionGroups = districts.flatMap<VisibleRegionGroup>((district) => {
     const regionPages = findRegionPages(pagesByRegion, district);
@@ -381,7 +408,7 @@ export default function HomeRegionExplorer({
                     aria-pressed={selectedRegion === region}
                     onClick={() => setSelectedRegion(region)}
                   >
-                    {region}
+                    {getDisplayRegionName(region)}
                   </button>
                 ))}
               </div>
@@ -411,7 +438,7 @@ export default function HomeRegionExplorer({
                         type="button"
                         onClick={() => handleDistrictScroll(anchorSlug)}
                       >
-                        {district}
+                        {getDisplayRegionName(district)}
                       </button>
                     );
                   })}
@@ -498,7 +525,7 @@ export default function HomeRegionExplorer({
                       overflowWrap: "break-word",
                     }}
                   >
-                    {region}
+                    {getDisplayRegionName(region)}
                   </h3>
 
                   {regionPages.length > 0 ? (
@@ -506,9 +533,8 @@ export default function HomeRegionExplorer({
                       className="home-service-grid"
                       style={{
                         display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(210px, 1fr))",
-                        gap: "12px",
+                        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                        gap: "16px",
                       }}
                     >
                       {regionPages.map((page) => (
@@ -518,25 +544,26 @@ export default function HomeRegionExplorer({
                           href={page.href}
                           style={{
                             display: "flex",
-                            minHeight: "64px",
+                            minHeight: "88px",
                             alignItems: "center",
-                            padding: "14px 16px",
+                            padding: "24px",
                             border: "1px solid #e5e7eb",
                             borderRadius: "8px",
                             textDecoration: "none",
                             color: "#111827",
                             background: "#ffffff",
                             boxSizing: "border-box",
-                            fontSize: "15px",
-                            fontWeight: 800,
-                            lineHeight: 1.45,
+                            fontSize: "17px",
+                            fontWeight: 600,
+                            lineHeight: 1.625,
                             wordBreak: "keep-all",
+                            whiteSpace: "normal",
                             overflowWrap: "break-word",
                             transition:
                               "border-color 160ms ease, background 160ms ease, transform 160ms ease",
                           }}
                         >
-                          {page.페이지제목}
+                          {getDisplayRegionName(page.페이지제목)}
                         </a>
                       ))}
                     </div>
@@ -588,9 +615,9 @@ export default function HomeRegionExplorer({
             }
 
             .hero-region-selector {
-              max-width: 720px;
+              max-width: 900px;
               margin: 30px auto 0;
-              padding: 18px 20px;
+              padding: 24px;
               border: 1px solid #e5e7eb;
               border-radius: 14px;
               background: rgba(255, 255, 255, 0.58);
@@ -598,23 +625,32 @@ export default function HomeRegionExplorer({
             }
 
             .hero-region-buttons {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 8px;
-              justify-content: center;
+              display: grid;
+              grid-template-columns: repeat(6, minmax(0, 1fr));
+              gap: 12px;
             }
 
             .hero-region-button {
-              padding: 6px 13px;
+              display: inline-flex;
+              min-height: 48px;
+              min-width: 88px;
+              width: 100%;
+              align-items: center;
+              justify-content: center;
+              padding: 12px 20px;
               border: 1px solid #dce1e7;
               border-radius: 999px;
               background: #ffffff;
               color: #374151;
+              box-sizing: border-box;
               cursor: pointer;
               font: inherit;
-              font-size: 13px;
-              font-weight: 700;
+              font-size: 16px;
+              font-weight: 600;
               line-height: 1.4;
+              text-align: center;
+              white-space: nowrap;
+              word-break: keep-all;
               transition: border-color 160ms ease, background 160ms ease,
                 color 160ms ease;
             }
@@ -631,9 +667,9 @@ export default function HomeRegionExplorer({
             }
 
             .hero-district-card {
-              max-width: 720px;
+              max-width: 960px;
               margin: 14px auto 0;
-              padding: 14px 16px;
+              padding: 24px;
               border: 1px solid #e5e7eb;
               border-radius: 12px;
               background: rgba(255, 255, 255, 0.78);
@@ -641,22 +677,32 @@ export default function HomeRegionExplorer({
             }
 
             .hero-district-chips {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 7px;
+              display: grid;
+              grid-template-columns: repeat(6, minmax(0, 1fr));
+              gap: 12px;
             }
 
             .hero-district-chip {
-              padding: 4px 9px;
+              display: inline-flex;
+              min-height: 44px;
+              min-width: 112px;
+              width: 100%;
+              align-items: center;
+              justify-content: center;
+              padding: 10px 16px;
               border-radius: 999px;
               border: 1px solid #e5e7eb;
               background: #ffffff;
               color: #4b5563;
+              box-sizing: border-box;
               cursor: pointer;
               font: inherit;
-              font-size: 12px;
+              font-size: 16px;
               font-weight: 600;
               line-height: 1.4;
+              text-align: center;
+              white-space: nowrap;
+              word-break: keep-all;
               text-decoration: none;
               transition: border-color 160ms ease, color 160ms ease,
                 background 160ms ease;
@@ -677,6 +723,26 @@ export default function HomeRegionExplorer({
             .home-region-section:hover {
               border-color: #d1d5db;
               box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+            }
+
+            @media (max-width: 1280px) {
+              .hero-district-chips {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+              }
+            }
+
+            @media (max-width: 1024px) {
+              .hero-region-buttons {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+              }
+
+              .hero-district-chips {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+              }
+
+              .home-service-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+              }
             }
 
             @media (max-width: 768px) {
@@ -737,18 +803,19 @@ export default function HomeRegionExplorer({
               }
 
               .hero-region-buttons {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 7px;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 8px;
               }
 
               .hero-region-button {
-                min-height: 40px;
+                min-height: 44px;
+                min-width: 76px;
                 padding: 7px 10px;
+                font-size: 14px;
               }
 
               .hero-district-card {
-                padding: 14px;
+                padding: 16px;
                 background: rgba(255, 255, 255, 0.94);
                 color: #111827 !important;
               }
@@ -762,12 +829,15 @@ export default function HomeRegionExplorer({
               }
 
               .hero-district-chip {
-                display: inline-flex;
-                min-height: 32px;
-                align-items: center;
+                min-height: 42px;
+                min-width: 96px;
                 padding: 6px 10px;
-                box-sizing: border-box;
-                font-size: 13px;
+                font-size: 14px;
+              }
+
+              .hero-district-chips {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
               }
 
               .home-services-section {
@@ -815,10 +885,14 @@ export default function HomeRegionExplorer({
               }
 
               .home-service-card {
+                min-height: 76px !important;
                 width: 100%;
+                padding: 16px !important;
                 background: #ffffff !important;
                 color: #111827 !important;
-                overflow-wrap: anywhere !important;
+                font-size: 16px !important;
+                line-height: 1.625 !important;
+                overflow-wrap: break-word !important;
               }
 
               .home-services-pending {
@@ -832,8 +906,12 @@ export default function HomeRegionExplorer({
               }
             }
 
-            @media (max-width: 360px) {
+            @media (max-width: 640px) {
               .hero-region-buttons {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+              }
+
+              .hero-district-chips {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
               }
             }
