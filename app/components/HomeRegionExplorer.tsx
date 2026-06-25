@@ -266,7 +266,7 @@ function getDistrictAnchorSlug(district: string) {
 function getDisplayRegionName(region: string) {
   return region
     .replace(/부산부산진구/g, "부산진구")
-    .replace(/대구(달서구|수성구|북구|동구|중구|달성군|서구|남구)/g, "$1");
+    .replace(/대구(달서구|수성구|달성군)/g, "$1");
 }
 
 export default function HomeRegionExplorer({
