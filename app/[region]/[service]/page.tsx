@@ -159,6 +159,7 @@ const sectionTitles =
           }
 
           .service-page-intro-title {
+            margin: 56px 0 28px;
             font-size: clamp(27px, 4vw, 36px);
             font-weight: 800;
             line-height: 1.35;
