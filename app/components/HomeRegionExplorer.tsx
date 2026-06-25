@@ -115,7 +115,16 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "부산사상구",
     "부산기장군",
   ],
-  대구: [],
+  대구: [
+    "대구달서구",
+    "대구수성구",
+    "대구북구",
+    "대구동구",
+    "대구중구",
+    "대구달성군",
+    "대구서구",
+    "대구남구",
+  ],
   대전: [],
   광주: [],
   울산: [],
@@ -173,6 +182,14 @@ const districtAnchorSlugs: Record<string, string> = {
   의왕: "uiwang",
   오산: "osan",
   이천: "icheon",
+  대구달서구: "daegu-dalseo",
+  대구수성구: "daegu-suseong",
+  대구북구: "daegu-buk",
+  대구동구: "daegu-dong",
+  대구중구: "daegu-jung",
+  대구달성군: "daegu-dalseong",
+  대구서구: "daegu-seo",
+  대구남구: "daegu-nam",
 };
 
 function normalizeRegionName(region: string) {
@@ -247,7 +264,9 @@ function getDistrictAnchorSlug(district: string) {
 }
 
 function getDisplayRegionName(region: string) {
-  return region.replace(/부산부산진구/g, "부산진구");
+  return region
+    .replace(/부산부산진구/g, "부산진구")
+    .replace(/대구(달서구|수성구|북구|동구|중구|달성군|서구|남구)/g, "$1");
 }
 
 export default function HomeRegionExplorer({

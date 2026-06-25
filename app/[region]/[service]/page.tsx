@@ -145,6 +145,29 @@ const sectionTitles =
               color: #cbd5e1 !important;
             }
           }
+
+          .service-page-check-title {
+            margin-top: 48px;
+            text-align: center;
+            font-size: clamp(26px, 4vw, 34px);
+            font-weight: 800;
+          }
+
+          .service-page-intro-copy {
+            font-size: clamp(18px, 2.8vw, 21px);
+            line-height: 1.75;
+          }
+
+          .service-page-intro-title {
+            font-size: clamp(27px, 4vw, 36px);
+            font-weight: 800;
+            line-height: 1.35;
+          }
+
+          .service-page-body-copy {
+            font-size: clamp(18px, 2.5vw, 20px);
+            line-height: 1.85;
+          }
         `}
       </style>
       <section
@@ -377,7 +400,7 @@ const sectionTitles =
     lineHeight: 1.8,
   }}
 >
-  <p>{page.도입문}</p>
+  <p className="service-page-body-copy">{page.도입문}</p>
 
   <h3
   style={{
@@ -390,7 +413,7 @@ const sectionTitles =
 >
   {sectionTitles.feature}
 </h3>
-  <p>{page.현장특징}</p>
+  <p className="service-page-body-copy">{page.현장특징}</p>
 
   <h3
   style={{
@@ -403,7 +426,7 @@ const sectionTitles =
 >
   {sectionTitles.scope}
 </h3>
-  <p>{page.철거범위}</p>
+  <p className="service-page-body-copy">{page.철거범위}</p>
 
   <h3
   style={{
@@ -416,7 +439,7 @@ const sectionTitles =
 >
   {sectionTitles.process}
 </h3>
-  <p>{page.진행절차}</p>
+  <p className="service-page-body-copy">{page.진행절차}</p>
 
   <h3
   style={{
@@ -429,7 +452,7 @@ const sectionTitles =
 >
   {sectionTitles.cost}
 </h3>
-  <p>{page.비용안내}</p>
+  <p className="service-page-body-copy">{page.비용안내}</p>
 
   <h3
   style={{
@@ -442,7 +465,7 @@ const sectionTitles =
 >
   {sectionTitles.caution}
 </h3>
-  <p>{page.주의사항}</p>
+  <p className="service-page-body-copy">{page.주의사항}</p>
 
   <h3
   style={{
@@ -471,7 +494,7 @@ const sectionTitles =
     <p>A. {page.FAQ3답변}</p>
   </div>
 </div> 
-          <h2 className="service-page-section-title">상담 전 확인하면 좋은 사항</h2>
+          <h2 className="service-page-section-title service-page-check-title">상담 전 확인하면 좋은 사항</h2>
 
           <div
             style={{
