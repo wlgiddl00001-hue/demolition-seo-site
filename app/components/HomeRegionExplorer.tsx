@@ -139,7 +139,13 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "광주북구",
     "광주광산구",
   ],
-  울산: [],
+  울산: [
+    "울산중구",
+    "울산남구",
+    "울산동구",
+    "울산북구",
+    "울산울주군",
+  ],
   세종: [],
   충청: [],
   강원: [],
@@ -212,6 +218,11 @@ const districtAnchorSlugs: Record<string, string> = {
   광주남구: "gwangju-nam",
   광주북구: "gwangju-buk",
   광주광산구: "gwangju-gwangsan",
+  울산중구: "ulsan-jung",
+  울산남구: "ulsan-nam",
+  울산동구: "ulsan-dong",
+  울산북구: "ulsan-buk",
+  울산울주군: "ulsan-ulju",
 };
 
 function normalizeRegionName(region: string) {
