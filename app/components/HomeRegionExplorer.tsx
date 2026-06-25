@@ -13,7 +13,6 @@ const regions = [
   "울산",
   "세종",
   "충청",
-  "강원",
 ] as const;
 
 type Region = (typeof regions)[number];
@@ -39,7 +38,9 @@ export type PagesByRegion = Array<{
   pages: ServicePage[];
 }>;
 
-const districtsByRegion: Record<Region, readonly string[]> = {
+const districtsByRegion: Record<Region, readonly string[]> & {
+  강원: readonly string[];
+} = {
   서울: [
     "강남구",
     "강동구",
