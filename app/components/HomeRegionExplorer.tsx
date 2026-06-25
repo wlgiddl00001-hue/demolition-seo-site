@@ -132,7 +132,13 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "대전유성구",
     "대전대덕구",
   ],
-  광주: [],
+  광주: [
+    "광주동구",
+    "광주서구",
+    "광주남구",
+    "광주북구",
+    "광주광산구",
+  ],
   울산: [],
   세종: [],
   충청: [],
@@ -201,6 +207,11 @@ const districtAnchorSlugs: Record<string, string> = {
   대전서구: "daejeon-seo",
   대전유성구: "daejeon-yuseong",
   대전대덕구: "daejeon-daedeok",
+  광주동구: "gwangju-dong",
+  광주서구: "gwangju-seo",
+  광주남구: "gwangju-nam",
+  광주북구: "gwangju-buk",
+  광주광산구: "gwangju-gwangsan",
 };
 
 function normalizeRegionName(region: string) {
@@ -278,7 +289,8 @@ function getDisplayRegionName(region: string) {
   return region
     .replace(/부산부산진구/g, "부산진구")
     .replace(/대구(달서구|수성구|달성군)/g, "$1")
-    .replace(/대전(유성구|대덕구)/g, "$1");
+    .replace(/대전(유성구|대덕구)/g, "$1")
+    .replace(/광주(광산구)/g, "$1");
 }
 
 export default function HomeRegionExplorer({
