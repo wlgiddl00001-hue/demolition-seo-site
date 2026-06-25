@@ -146,7 +146,7 @@ const districtsByRegion: Record<Region, readonly string[]> = {
     "울산북구",
     "울산울주군",
   ],
-  세종: [],
+  세종: ["세종시"],
   충청: [],
   강원: [],
 };
@@ -223,6 +223,7 @@ const districtAnchorSlugs: Record<string, string> = {
   울산동구: "ulsan-dong",
   울산북구: "ulsan-buk",
   울산울주군: "ulsan-ulju",
+  세종시: "sejong",
 };
 
 function normalizeRegionName(region: string) {
