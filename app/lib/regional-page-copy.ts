@@ -16,6 +16,11 @@ const targetRegionNames: Record<string, string> = {
   dangjin: "당진",
   seosan: "서산",
   nonsan: "논산",
+  jeonju: "전주",
+  iksan: "익산",
+  gunsan: "군산",
+  jeongeup: "정읍",
+  gimje: "김제",
 };
 
 const serviceCopy: Record<
