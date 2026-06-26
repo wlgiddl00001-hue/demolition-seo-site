@@ -21,6 +21,11 @@ const targetRegionNames: Record<string, string> = {
   gunsan: "군산",
   jeongeup: "정읍",
   gimje: "김제",
+  suncheon: "순천",
+  yeosu: "여수",
+  mokpo: "목포",
+  gwangyang: "광양",
+  naju: "나주",
 };
 
 const serviceCopy: Record<
