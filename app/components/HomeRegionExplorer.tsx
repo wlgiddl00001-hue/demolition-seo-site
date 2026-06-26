@@ -12,7 +12,7 @@ const regions = [
   "광주",
   "울산",
   "세종",
-  "충청",
+  "충북",
 ] as const;
 
 type Region = (typeof regions)[number];
@@ -148,11 +148,13 @@ const districtsByRegion: Record<Region, readonly string[]> & {
     "울산울주군",
   ],
   세종: ["세종시"],
-  충청: [],
+  충북: ["청주", "충주", "제천", "음성", "진천"],
   강원: [],
 };
 
 const pendingMessage = "해당 지역 정보는 순차적으로 추가될 예정입니다.";
+const defaultServiceSlug = "restaurant-demolition-company";
+const defaultServiceDistricts = new Set(["청주", "충주", "제천", "음성", "진천"]);
 
 const districtAnchorSlugs: Record<string, string> = {
   강남구: "gangnam",
@@ -225,6 +227,11 @@ const districtAnchorSlugs: Record<string, string> = {
   울산북구: "ulsan-buk",
   울산울주군: "ulsan-ulju",
   세종시: "sejong",
+  청주: "cheongju",
+  충주: "chungju",
+  제천: "jecheon",
+  음성: "eumseong",
+  진천: "jincheon",
 };
 
 function normalizeRegionName(region: string) {
@@ -296,6 +303,14 @@ function getRouteResolvablePages(pages: ServicePage[]) {
 
 function getDistrictAnchorSlug(district: string) {
   return districtAnchorSlugs[district] ?? normalizeRegionNameForMatch(district);
+}
+
+function getDistrictDefaultServiceHref(district: string) {
+  if (!defaultServiceDistricts.has(district)) {
+    return null;
+  }
+
+  return `/${getDistrictAnchorSlug(district)}/${defaultServiceSlug}`;
 }
 
 function getDisplayRegionName(region: string) {
@@ -486,6 +501,19 @@ export default function HomeRegionExplorer({
                 <div className="hero-district-chips">
                   {districts.map((district) => {
                     const anchorSlug = sectionAnchorSlugByDistrict.get(district);
+                    const defaultServiceHref = getDistrictDefaultServiceHref(district);
+
+                    if (defaultServiceHref) {
+                      return (
+                        <a
+                          className="hero-district-chip"
+                          key={district}
+                          href={defaultServiceHref}
+                        >
+                          {getDisplayRegionName(district)}
+                        </a>
+                      );
+                    }
 
                     return (
                       <button
@@ -764,7 +792,7 @@ export default function HomeRegionExplorer({
                 background 160ms ease;
             }
 
-            button.hero-district-chip:hover {
+            .hero-district-chip:hover {
               border-color: #9ca3af;
               background: #f9fafb;
               color: #111827;
