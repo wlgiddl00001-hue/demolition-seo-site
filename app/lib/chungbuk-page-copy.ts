@@ -1,0 +1,122 @@
+type ChungbukPageCopyTarget = {
+  지역: string;
+  URL슬러그: string;
+  페이지제목: string;
+  H1: string;
+};
+
+const chungbukRegionNames: Record<string, string> = {
+  cheongju: "청주",
+  chungju: "충주",
+  jecheon: "제천",
+  eumseong: "음성",
+  jincheon: "진천",
+};
+
+const chungbukServiceCopy: Record<
+  string,
+  {
+    serviceName: string;
+    cardDetail: string;
+    h1Detail: string;
+  }
+> = {
+  "restaurant-demolition-company": {
+    serviceName: "식당",
+    cardDetail: "주방·홀 정리 상담",
+    h1Detail: "철거 전 확인해야 할 주방·홀 정리 안내",
+  },
+  "cafe-demolition-company": {
+    serviceName: "카페",
+    cardDetail: "인테리어 철거 상담",
+    h1Detail: "인테리어 철거와 원상복구 안내",
+  },
+  "pc-room-demolition-company": {
+    serviceName: "PC방",
+    cardDetail: "좌석·배선 철거 상담",
+    h1Detail: "좌석·배선 정리를 위한 철거 안내",
+  },
+  "karaoke-demolition-company": {
+    serviceName: "노래방",
+    cardDetail: "룸 철거 상담",
+    h1Detail: "룸 철거와 방음 구조 정리 안내",
+  },
+  "beer-pub-demolition-company": {
+    serviceName: "호프집",
+    cardDetail: "영업장 정리 상담",
+    h1Detail: "폐업 정리를 위한 철거 안내",
+  },
+  "bar-demolition-company": {
+    serviceName: "술집",
+    cardDetail: "내부 철거 상담",
+    h1Detail: "내부 철거와 원상복구 안내",
+  },
+  "bowling-alley-demolition-company": {
+    serviceName: "볼링장",
+    cardDetail: "대형 시설 철거 상담",
+    h1Detail: "대형 시설 철거 안내",
+  },
+  "screen-golf-demolition-company": {
+    serviceName: "스크린골프장",
+    cardDetail: "룸 철거 상담",
+    h1Detail: "룸 철거와 장비 정리 안내",
+  },
+  "office-demolition-company": {
+    serviceName: "사무실",
+    cardDetail: "칸막이·집기 정리 상담",
+    h1Detail: "칸막이·집기 철거 안내",
+  },
+  "daycare-center-demolition-company": {
+    serviceName: "어린이집",
+    cardDetail: "안전 철거 상담",
+    h1Detail: "안전 철거와 원상복구 안내",
+  },
+  "convenience-store-demolition-company": {
+    serviceName: "편의점",
+    cardDetail: "매장 집기 철거 상담",
+    h1Detail: "집기·진열대 철거 안내",
+  },
+  "hair-salon-demolition-company": {
+    serviceName: "미용실",
+    cardDetail: "설비 철거 상담",
+    h1Detail: "설비 철거와 매장 정리 안내",
+  },
+  "nail-shop-demolition-company": {
+    serviceName: "네일샵",
+    cardDetail: "소형 매장 정리 상담",
+    h1Detail: "소형 매장 철거 안내",
+  },
+  "gym-demolition-company": {
+    serviceName: "헬스장",
+    cardDetail: "운동기구·바닥 철거 상담",
+    h1Detail: "운동기구·바닥 철거 안내",
+  },
+  "academy-demolition-company": {
+    serviceName: "학원",
+    cardDetail: "강의실 원상복구 상담",
+    h1Detail: "강의실 철거와 원상복구 안내",
+  },
+};
+
+function getSlugSegments(urlSlug: string) {
+  return urlSlug.trim().replace(/^\/+|\/+$/g, "").split("/");
+}
+
+export function normalizeChungbukPageCopy<T extends ChungbukPageCopyTarget>(
+  page: T,
+): T {
+  const [regionSlug, serviceSlug] = getSlugSegments(page.URL슬러그);
+  const regionName = chungbukRegionNames[regionSlug];
+  const serviceCopy = chungbukServiceCopy[serviceSlug];
+
+  if (!regionName || !serviceCopy) {
+    return page;
+  }
+
+  return {
+    ...page,
+    지역: page.지역.trim() || regionName,
+    페이지제목: `${regionName} ${serviceCopy.serviceName} 철거업체 | ${serviceCopy.cardDetail}`,
+    H1: `${regionName} ${serviceCopy.serviceName} ${serviceCopy.h1Detail}`,
+  };
+}

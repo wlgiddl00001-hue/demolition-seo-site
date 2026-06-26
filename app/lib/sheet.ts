@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import { normalizeChungbukPageCopy } from "./chungbuk-page-copy";
 
 export const SHEET_CSV_URL =
   
@@ -39,5 +40,5 @@ export async function getPages(): Promise<PageData[]> {
     skipEmptyLines: true,
   });
 
-  return result.data;
+  return result.data.map(normalizeChungbukPageCopy);
 }
