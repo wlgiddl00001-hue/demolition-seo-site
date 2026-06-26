@@ -26,6 +26,11 @@ const targetRegionNames: Record<string, string> = {
   mokpo: "목포",
   gwangyang: "광양",
   naju: "나주",
+  pohang: "포항",
+  gumi: "구미",
+  gyeongsan: "경산",
+  gyeongju: "경주",
+  andong: "안동",
 };
 
 const serviceCopy: Record<
