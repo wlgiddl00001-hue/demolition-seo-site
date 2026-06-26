@@ -26,6 +26,11 @@ const sheetManagedRegionSlugs = new Set([
   "mokpo",
   "gwangyang",
   "naju",
+  "changwon",
+  "gimhae",
+  "jinju",
+  "yangsan",
+  "geoje",
 ]);
 
 const targetRegionNames: Record<string, string> = {

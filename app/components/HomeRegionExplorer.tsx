@@ -17,6 +17,7 @@ const regions = [
   "전북",
   "전남",
   "경북",
+  "경남",
 ] as const;
 
 type Region = (typeof regions)[number];
@@ -155,6 +156,7 @@ const districtsByRegion: Record<Region, readonly string[]> = {
   전북: ["전주", "익산", "군산", "정읍", "김제"],
   전남: ["순천", "여수", "목포", "광양", "나주"],
   경북: ["포항", "구미", "경산", "경주", "안동"],
+  경남: ["창원", "김해", "진주", "양산", "거제"],
 };
 
 const pendingMessage = "해당 지역 정보는 순차적으로 추가될 예정입니다.";
@@ -255,6 +257,11 @@ const districtAnchorSlugs: Record<string, string> = {
   경산: "gyeongsan",
   경주: "gyeongju",
   안동: "andong",
+  창원: "changwon",
+  김해: "gimhae",
+  진주: "jinju",
+  양산: "yangsan",
+  거제: "geoje",
 };
 
 function normalizeRegionName(region: string) {
