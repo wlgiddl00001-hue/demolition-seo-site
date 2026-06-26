@@ -5,6 +5,29 @@ type RegionalPageCopyTarget = {
   H1: string;
 };
 
+const sheetManagedRegionSlugs = new Set([
+  "cheongju",
+  "chungju",
+  "jecheon",
+  "eumseong",
+  "jincheon",
+  "cheonan",
+  "asan",
+  "dangjin",
+  "seosan",
+  "nonsan",
+  "jeonju",
+  "iksan",
+  "gunsan",
+  "jeongeup",
+  "gimje",
+  "suncheon",
+  "yeosu",
+  "mokpo",
+  "gwangyang",
+  "naju",
+]);
+
 const targetRegionNames: Record<string, string> = {
   cheongju: "청주",
   chungju: "충주",
@@ -126,6 +149,11 @@ export function normalizeRegionalPageCopy<T extends RegionalPageCopyTarget>(
   page: T,
 ): T {
   const [regionSlug, serviceSlug] = getSlugSegments(page.URL슬러그);
+
+  if (sheetManagedRegionSlugs.has(regionSlug)) {
+    return page;
+  }
+
   const regionName = targetRegionNames[regionSlug];
   const copy = serviceCopy[serviceSlug];
 
@@ -136,7 +164,6 @@ export function normalizeRegionalPageCopy<T extends RegionalPageCopyTarget>(
   return {
     ...page,
     지역: page.지역.trim() || regionName,
-    페이지제목: `${regionName} ${copy.serviceName} 철거업체 | ${copy.cardDetail}`,
     H1: `${regionName} ${copy.serviceName} ${copy.h1Detail}`,
   };
 }
