@@ -13,6 +13,7 @@ const regions = [
   "울산",
   "세종",
   "충북",
+  "충남",
 ] as const;
 
 type Region = (typeof regions)[number];
@@ -38,9 +39,7 @@ export type PagesByRegion = Array<{
   pages: ServicePage[];
 }>;
 
-const districtsByRegion: Record<Region, readonly string[]> & {
-  강원: readonly string[];
-} = {
+const districtsByRegion: Record<Region, readonly string[]> = {
   서울: [
     "강남구",
     "강동구",
@@ -149,12 +148,23 @@ const districtsByRegion: Record<Region, readonly string[]> & {
   ],
   세종: ["세종시"],
   충북: ["청주", "충주", "제천", "음성", "진천"],
-  강원: [],
+  충남: ["천안", "아산", "당진", "서산", "논산"],
 };
 
 const pendingMessage = "해당 지역 정보는 순차적으로 추가될 예정입니다.";
 const defaultServiceSlug = "restaurant-demolition-company";
-const defaultServiceDistricts = new Set(["청주", "충주", "제천", "음성", "진천"]);
+const defaultServiceDistricts = new Set([
+  "청주",
+  "충주",
+  "제천",
+  "음성",
+  "진천",
+  "천안",
+  "아산",
+  "당진",
+  "서산",
+  "논산",
+]);
 
 const districtAnchorSlugs: Record<string, string> = {
   강남구: "gangnam",
@@ -232,6 +242,11 @@ const districtAnchorSlugs: Record<string, string> = {
   제천: "jecheon",
   음성: "eumseong",
   진천: "jincheon",
+  천안: "cheonan",
+  아산: "asan",
+  당진: "dangjin",
+  서산: "seosan",
+  논산: "nonsan",
 };
 
 function normalizeRegionName(region: string) {

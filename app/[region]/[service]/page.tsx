@@ -1,4 +1,4 @@
-import { getPages } from "../../lib/sheet";
+import { getPages, normalizePageSlug, type PageData } from "../../lib/sheet";
 import type { Metadata } from "next";
 
 type Props = {
@@ -8,12 +8,20 @@ type Props = {
   }>;
 };
 
+function findPageBySlug(pages: PageData[], slug: string) {
+  const normalizedSlug = normalizePageSlug(slug);
+
+  return pages.find(
+    (item) => normalizePageSlug(item.URL슬러그) === normalizedSlug,
+  );
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, service } = await params;
   const pages = await getPages();
 
   const slug = `/${region}/${service}`;
-const page = pages.find((item) => item.URL슬러그 === slug);
+  const page = findPageBySlug(pages, slug);
 
   if (!page) {
     return {
@@ -32,8 +40,8 @@ export default async function ServicePage({ params }: Props) {
   const { region, service } = await params;
   const pages = await getPages();
 
-   const slug = `/${region}/${service}`;
-const page = pages.find((item) => item.URL슬러그 === slug);
+  const slug = `/${region}/${service}`;
+  const page = findPageBySlug(pages, slug);
 
   if (!page) {
     return (

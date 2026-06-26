@@ -1,8 +1,7 @@
 import Papa from "papaparse";
-import { normalizeChungbukPageCopy } from "./chungbuk-page-copy";
+import { normalizeRegionalPageCopy } from "./regional-page-copy";
 
 export const SHEET_CSV_URL =
-  
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOv6fTn3PBHiV5XBAoz824rgYAwRyU1tfd1-aGrl2Gj8MDHnxAlhwT0-h97ZPc-YTRvyYgOaVumN12/pub?gid=2141467093&single=true&output=csv";
 
 export type PageData = {
@@ -14,7 +13,7 @@ export type PageData = {
   H1: string;
   메타설명: string;
   본문요약: string;
-    도입문: string;
+  도입문: string;
   현장특징: string;
   철거범위: string;
   진행절차: string;
@@ -28,10 +27,23 @@ export type PageData = {
   FAQ3답변: string;
 };
 
+export function normalizePageSlug(slug: string) {
+  const trimmedSlug = slug.trim().replace(/^\/+|\/+$/g, "");
+
+  return trimmedSlug ? `/${trimmedSlug}` : "";
+}
+
+function normalizePageData(page: PageData): PageData {
+  return {
+    ...page,
+    URL슬러그: String(page.URL슬러그 ?? "").trim(),
+  };
+}
+
 export async function getPages(): Promise<PageData[]> {
- const response = await fetch(SHEET_CSV_URL, {
-  cache: "no-store",
-});
+  const response = await fetch(SHEET_CSV_URL, {
+    cache: "no-store",
+  });
 
   const csvText = await response.text();
 
@@ -40,5 +52,7 @@ export async function getPages(): Promise<PageData[]> {
     skipEmptyLines: true,
   });
 
-  return result.data.map(normalizeChungbukPageCopy);
+  return result.data
+    .map(normalizePageData)
+    .map(normalizeRegionalPageCopy);
 }

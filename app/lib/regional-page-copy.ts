@@ -1,19 +1,24 @@
-type ChungbukPageCopyTarget = {
+type RegionalPageCopyTarget = {
   지역: string;
   URL슬러그: string;
   페이지제목: string;
   H1: string;
 };
 
-const chungbukRegionNames: Record<string, string> = {
+const targetRegionNames: Record<string, string> = {
   cheongju: "청주",
   chungju: "충주",
   jecheon: "제천",
   eumseong: "음성",
   jincheon: "진천",
+  cheonan: "천안",
+  asan: "아산",
+  dangjin: "당진",
+  seosan: "서산",
+  nonsan: "논산",
 };
 
-const chungbukServiceCopy: Record<
+const serviceCopy: Record<
   string,
   {
     serviceName: string;
@@ -73,7 +78,7 @@ const chungbukServiceCopy: Record<
   },
   "convenience-store-demolition-company": {
     serviceName: "편의점",
-    cardDetail: "매장 집기 철거 상담",
+    cardDetail: "집기·진열대 철거 상담",
     h1Detail: "집기·진열대 철거 안내",
   },
   "hair-salon-demolition-company": {
@@ -102,21 +107,21 @@ function getSlugSegments(urlSlug: string) {
   return urlSlug.trim().replace(/^\/+|\/+$/g, "").split("/");
 }
 
-export function normalizeChungbukPageCopy<T extends ChungbukPageCopyTarget>(
+export function normalizeRegionalPageCopy<T extends RegionalPageCopyTarget>(
   page: T,
 ): T {
   const [regionSlug, serviceSlug] = getSlugSegments(page.URL슬러그);
-  const regionName = chungbukRegionNames[regionSlug];
-  const serviceCopy = chungbukServiceCopy[serviceSlug];
+  const regionName = targetRegionNames[regionSlug];
+  const copy = serviceCopy[serviceSlug];
 
-  if (!regionName || !serviceCopy) {
+  if (!regionName || !copy) {
     return page;
   }
 
   return {
     ...page,
     지역: page.지역.trim() || regionName,
-    페이지제목: `${regionName} ${serviceCopy.serviceName} 철거업체 | ${serviceCopy.cardDetail}`,
-    H1: `${regionName} ${serviceCopy.serviceName} ${serviceCopy.h1Detail}`,
+    페이지제목: `${regionName} ${copy.serviceName} 철거업체 | ${copy.cardDetail}`,
+    H1: `${regionName} ${copy.serviceName} ${copy.h1Detail}`,
   };
 }
