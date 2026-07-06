@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thesave-demolition.netlify.app/sitemap.xml
+Sitemap: https://demolition-seo-site.vercel.app/sitemap.xml

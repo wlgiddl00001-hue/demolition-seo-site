@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://thesave-demolition.netlify.app/sitemap.xml",
+    sitemap: "https://demolition-seo-site.vercel.app/sitemap.xml",
   };
 }

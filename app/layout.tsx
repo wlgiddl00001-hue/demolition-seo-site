@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "더세이브 철거 원상복구",
     description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
-    url: "https://thesave-demolition.netlify.app",
+    url: "https://demolition-seo-site.vercel.app",
     siteName: "더세이브 철거 원상복구",
     type: "website",
   },
@@ -49,7 +49,7 @@ export default function RootLayout({
         />
         <meta
           property="og:url"
-          content="https://thesave-demolition.netlify.app"
+          content="https://demolition-seo-site.vercel.app"
         />
         <meta property="og:site_name" content="더세이브 철거 원상복구" />
         <meta property="og:type" content="website" />
