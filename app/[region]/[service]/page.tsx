@@ -1,5 +1,8 @@
 import { getPages, normalizePageSlug, type PageData } from "../../lib/sheet";
 import type { Metadata } from "next";
+import ConsultationChecklist from "../../components/ConsultationChecklist";
+import ConsultationSection from "../../components/ConsultationSection";
+import RelatedServicesSidebar from "../../components/RelatedServicesSidebar";
 
 type Props = {
   params: Promise<{
@@ -14,6 +17,85 @@ function findPageBySlug(pages: PageData[], slug: string) {
   return pages.find(
     (item) => normalizePageSlug(item.URL슬러그) === normalizedSlug,
   );
+}
+
+function getConsultationServiceName(serviceName: string) {
+  return serviceName.replace(/업체/g, "").replace(/\s*안내$/g, "").trim();
+}
+
+function getHeroServiceLabel(serviceName: string) {
+  return getConsultationServiceName(serviceName).replace(/\s+/g, " ").trim();
+}
+
+function getHeroTitle(regionName: string, serviceName: string) {
+  const serviceLabel = getHeroServiceLabel(serviceName);
+
+  if (serviceLabel.includes("원상복구")) {
+    return `${regionName} 원상복구 상담 안내`;
+  }
+
+  if (serviceLabel.includes("철거")) {
+    return `${regionName} ${serviceLabel}부터 원상복구까지 한 번에`;
+  }
+
+  return `${regionName} ${serviceLabel} 철거와 원상복구 상담`;
+}
+
+function getHeroFocusText(serviceName: string) {
+  const normalizedService = serviceName.replace(/\s+/g, "");
+
+  if (normalizedService.includes("식당")) {
+    return "주방 설비, 후드, 배관, 가스, 바닥 오염 상태";
+  }
+
+  if (normalizedService.includes("카페")) {
+    return "카운터, 급배수, 전기, 쇼케이스, 간판 철거 범위";
+  }
+
+  if (normalizedService.includes("PC방")) {
+    return "전기 배선, 통신선, 칸막이, 냉난방 설비";
+  }
+
+  if (normalizedService.includes("노래방")) {
+    return "방음재, 룸 칸막이, 음향 장비, 소방설비";
+  }
+
+  if (normalizedService.includes("사무실")) {
+    return "파티션, 천장, 바닥재, 전기·통신 설비";
+  }
+
+  if (normalizedService.includes("미용실")) {
+    return "샴푸대, 급배수, 거울, 전기 설비";
+  }
+
+  if (normalizedService.includes("헬스장")) {
+    return "바닥재, 샤워실, 운동기구 반출 동선";
+  }
+
+  if (normalizedService.includes("학원")) {
+    return "칸막이, 책상, 보드, 전기·통신 설비";
+  }
+
+  if (normalizedService.includes("상가")) {
+    return "내부 인테리어, 간판, 바닥·벽면 마감, 폐기물 반출 조건";
+  }
+
+  if (normalizedService.includes("폐업")) {
+    return "폐업 일정, 집기 정리, 폐기물 반출, 원상복구 범위";
+  }
+
+  if (normalizedService.includes("원상복구")) {
+    return "계약서 기준, 관리실 확인 사항, 바닥·벽면·천장 마감 상태";
+  }
+
+  return "철거 범위, 원상복구 상태, 폐기물 반출 조건";
+}
+
+function getHeroDescription(regionName: string, serviceName: string) {
+  const serviceLabel = getHeroServiceLabel(serviceName);
+  const focusText = getHeroFocusText(serviceName);
+
+  return `${regionName}에서 ${serviceLabel}를 준비 중이라면 현장의 철거 범위와 원상복구 상태를 먼저 확인해야 합니다. ${focusText}를 살펴보고, 현장 구조와 폐기물 양, 장비 진입 조건, 작업 일정에 맞춰 견적과 진행 절차를 안내합니다.`;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -88,8 +170,10 @@ export default async function ServicePage({ params }: Props) {
   },
 ];
 
-const sectionTitles =
+  const sectionTitles =
   sectionTitleVariants[slug.length % sectionTitleVariants.length];
+  const heroTitle = getHeroTitle(page.지역, page.서비스);
+  const heroDescription = getHeroDescription(page.지역, page.서비스);
     return (
     <main
       className="service-page"
@@ -136,15 +220,6 @@ const sectionTitles =
               color: #cbd5e1 !important;
             }
 
-            .service-page-check-card {
-              background: #ffffff !important;
-              color: #111827 !important;
-            }
-
-            .service-page-check-card p {
-              color: #6b7280 !important;
-            }
-
             .service-page .service-page-body .service-page-intro-title {
               color: #ffffff !important;
             }
@@ -152,13 +227,6 @@ const sectionTitles =
             .service-page .service-page-body .service-page-intro-copy {
               color: #cbd5e1 !important;
             }
-          }
-
-          .service-page-check-title {
-            margin-top: 48px;
-            text-align: center;
-            font-size: clamp(26px, 4vw, 34px);
-            font-weight: 800;
           }
 
           .service-page-intro-copy {
@@ -179,80 +247,38 @@ const sectionTitles =
           }
         `}
       </style>
-      <section
-        className="service-page-hero"
-        style={{
-          padding: "64px 24px",
-          background: "#f3f4f6",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "960px",
-            margin: "0 auto",
-            textAlign: "center",
-          }}
-        >
-          <p
-            className="service-page-eyebrow"
-            style={{ marginBottom: "12px", color: "#6b7280" }}
-          >
-            {page.지역} · {page.서비스}
-          </p>
-
-          <h1
-            className="service-page-hero-title"
-            style={{
-              fontSize: "40px",
-              lineHeight: 1.2,
-              margin: "0 0 16px",
-            }}
-          >
-            {page.H1}
-          </h1>
-
-          <p
-            className="service-page-hero-description"
-            style={{ margin: "0 auto", fontSize: "18px", maxWidth: "760px" }}
-          >
-            {page.본문요약}
-          </p>
-
-          <img
-            src="/hero-demolition.png"
-            alt="철거 원상복구 상담 안내"
-            style={{
-              display: "block",
-              margin: "32px auto 0",
-              width: "100%",
-              maxWidth: "720px",
-              boxSizing: "border-box",
-              borderRadius: "16px",
-              border: "1px solid #e5e7eb",
-            }}
+      <section className="home-hero regional-detail-hero" aria-labelledby="regional-hero-title">
+        <div className="home-shell regional-detail-hero-grid">
+          <div className="home-hero-copy">
+            <p className="home-eyebrow">{page.지역} · {page.서비스}</p>
+            <h1 id="regional-hero-title">{heroTitle}</h1>
+            <p className="home-hero-description">{heroDescription}</p>
+            <div className="home-hero-actions" aria-label="상단 바로가기">
+              <a className="home-button home-button-primary" href="/#region-section">
+                지역별 철거 선택
+              </a>
+              <a className="home-button home-button-secondary" href="#regional-service-consultation">
+                무료 견적 신청
+              </a>
+              <a className="home-button home-button-secondary" href="tel:010-8286-7620">
+                010-8286-7620 전화 상담
+              </a>
+              <a className="home-button home-button-accent-soft" href="/#services-section">
+                업종별 서비스
+              </a>
+            </div>
+          </div>
+          <ConsultationChecklist
+            className="home-hero-checklist"
+            titleId="regional-hero-checklist-title"
           />
-
-          <a
-            href="tel:010-8286-7620"
-            style={{
-              display: "inline-block",
-              marginTop: "24px",
-              padding: "14px 22px",
-              background: "#111827",
-              color: "white",
-              textDecoration: "none",
-              borderRadius: "8px",
-              fontWeight: "bold",
-            }}
-          >
-            010-8286-7620 전화 상담하기
-          </a>
         </div>
       </section>
 
       <section className="service-page-body" style={{ padding: "48px 24px" }}>
+        <div className="regional-service-layout">
+          <RelatedServicesSidebar currentServiceSlug={service} />
+          <div className="regional-service-main">
         <div style={{ width: "100%", maxWidth: "960px", margin: "0 auto" }}>
           <img
             src="/service-banner.png"
@@ -503,141 +529,11 @@ const sectionTitles =
     <p>A. {page.FAQ3답변}</p>
   </div>
 </div> 
-          <h2 className="service-page-section-title service-page-check-title">상담 전 확인하면 좋은 사항</h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "16px",
-              marginTop: "20px",
-            }}
-          >
-            <div
-              className="service-page-check-card"
-              style={{
-                padding: "20px",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "white",
-              }}
-            >
-              <strong>공간 정보</strong>
-              <p style={{ margin: "8px 0 0", color: "#6b7280" }}>
-                철거할 공간의 면적과 층수
-              </p>
-            </div>
-
-            <div
-              className="service-page-check-card"
-              style={{
-                padding: "20px",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "white",
-              }}
-            >
-              <strong>반출 동선</strong>
-              <p style={{ margin: "8px 0 0", color: "#6b7280" }}>
-                폐기물 양과 반출 동선
-              </p>
-            </div>
-
-            <div
-              className="service-page-check-card"
-              style={{
-                padding: "20px",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "white",
-              }}
-            >
-              <strong>복구 범위</strong>
-              <p style={{ margin: "8px 0 0", color: "#6b7280" }}>
-                원상복구 필요 여부
-              </p>
-            </div>
-
-            <div
-              className="service-page-check-card"
-              style={{
-                padding: "20px",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "white",
-              }}
-            >
-              <strong>일정</strong>
-              <p style={{ margin: "8px 0 0", color: "#6b7280" }}>
-                작업 가능 날짜와 시간
-              </p>
-            </div>
-          </div>
-
-          <div
-            style={{
-              marginTop: "48px",
-              padding: "44px 40px",
-              borderRadius: "8px",
-              background: "#111827",
-              boxSizing: "border-box",
-              color: "white",
-            }}
-          >
-            <style>
-              {`
-                .service-page-call-button:hover {
-                  background: #facc15;
-                  color: #111827;
-                  transform: translateY(-2px);
-                  box-shadow: 0 14px 30px rgba(250, 204, 21, 0.28);
-                }
-              `}
-            </style>
-
-            <h2
-              style={{
-                margin: 0,
-                fontSize: "30px",
-                lineHeight: 1.25,
-                fontWeight: 800,
-              }}
-            >
-              {page.지역} {page.서비스} 상담이 필요하신가요?
-            </h2>
-
-            <p
-              style={{
-                margin: "18px 0 0",
-                maxWidth: "680px",
-                color: "#d1d5db",
-                fontSize: "17px",
-                lineHeight: 1.75,
-              }}
-            >
-              현장 사진과 철거 범위를 알려주시면 작업 가능 여부와 상담 안내를
-              도와드립니다.
-            </p>
-
-            <a
-              className="service-page-call-button"
-              href="tel:010-8286-7620"
-              style={{
-                display: "inline-block",
-                marginTop: "30px",
-                padding: "16px 26px",
-                background: "white",
-                color: "#111827",
-                textDecoration: "none",
-                borderRadius: "8px",
-                fontWeight: "bold",
-                boxShadow: "0 10px 24px rgba(0, 0, 0, 0.25)",
-                transition:
-                  "background 160ms ease, box-shadow 160ms ease, transform 160ms ease",
-              }}
-            >
-              010-8286-7620 전화 상담하기
-            </a>
+        </div>
+      <ConsultationSection
+        id="regional-service-consultation"
+        title={`${page.지역} ${getConsultationServiceName(page.서비스)} 상담 신청`}
+      />
           </div>
         </div>
       </section>

@@ -14,13 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "더세이브 철거 원상복구",
-  description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
+  metadataBase: new URL("https://demolition-seo-site.vercel.app"),
+  title: "전국 상가철거·원상복구 전문업체 | 더세이브",
+  description:
+    "상가철거, 식당철거, 사무실철거, 학원철거, 폐업철거와 원상복구 상담을 진행합니다.",
   openGraph: {
-    title: "더세이브 철거 원상복구",
-    description: "서울 지역 철거, 원상복구, 폐기물 처리 상담 안내",
+    title: "전국 상가철거·원상복구 전문업체 | 더세이브",
+    description:
+      "상가철거, 식당철거, 사무실철거, 학원철거, 폐업철거와 원상복구 상담을 진행합니다.",
     url: "https://demolition-seo-site.vercel.app",
-    siteName: "더세이브 철거 원상복구",
+    siteName: "더세이브",
     type: "website",
   },
   verification: {
@@ -41,19 +44,6 @@ export default function RootLayout({
       lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <meta property="og:title" content="더세이브 철거 원상복구" />
-        <meta
-          property="og:description"
-          content="서울 지역 철거, 원상복구, 폐기물 처리 상담 안내"
-        />
-        <meta
-          property="og:url"
-          content="https://demolition-seo-site.vercel.app"
-        />
-        <meta property="og:site_name" content="더세이브 철거 원상복구" />
-        <meta property="og:type" content="website" />
-      </head>
       <body className="min-h-full flex flex-col pb-24 md:pb-0">
         {children}
         <MobileBottomCTA />

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPages } from "./lib/sheet";
+import { COMMON_SERVICES } from "./lib/common-services";
 
 const BASE_URL = "https://demolition-seo-site.vercel.app";
 
@@ -16,6 +17,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1.0,
     },
+    ...COMMON_SERVICES.map((service) => ({
+      url: toAbsoluteUrl(service.slug),
+      changeFrequency: "weekly" as const,
+      priority: 0.85,
+    })),
     ...pages
       .filter((page) => page.URL슬러그)
       .map((page) => ({
