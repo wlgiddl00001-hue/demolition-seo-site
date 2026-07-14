@@ -5,6 +5,10 @@ import {
   getCommonServiceBySlug,
 } from "../lib/common-services";
 import { getPages, normalizePageSlug, type PageData } from "../lib/sheet";
+import {
+  getRegionSlugFromUrlSlug,
+  getServiceCardsForPages,
+} from "../lib/service-cards";
 import ConsultationSection from "../components/ConsultationSection";
 
 const BASE_URL = "https://demolition-seo-site.vercel.app";
@@ -27,7 +31,7 @@ function getPagePathSegments(page: PageData) {
 }
 
 function getRegionSlug(page: PageData) {
-  return getPagePathSegments(page)[0] ?? "";
+  return getRegionSlugFromUrlSlug(page.URL슬러그);
 }
 
 function getRegionPages(pages: PageData[], regionSlug: string) {
@@ -136,6 +140,7 @@ export default async function RegionOrCommonServicePage({ params }: Props) {
   }
 
   const regionName = getRegionName(regionPages, region);
+  const serviceCards = getServiceCardsForPages(regionPages, region);
 
   return (
     <main className="region-index-page">
@@ -161,10 +166,11 @@ export default async function RegionOrCommonServicePage({ params }: Props) {
       <section className="region-index-body">
         <div className="home-shell">
           <div className="home-link-grid">
-            {regionPages.map((page) => (
-              <a className="home-service-link" href={page.href} key={page.URL슬러그}>
-                <span>{page.페이지제목}</span>
-                <small>{page.서비스}</small>
+            {serviceCards.map((service) => (
+              <a className="home-service-link" href={service.href} key={service.slug}>
+                <span>{service.title}</span>
+                <small>{service.description}</small>
+                {service.supportNote ? <em>{service.supportNote}</em> : null}
               </a>
             ))}
           </div>

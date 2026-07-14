@@ -1,10 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  COMMON_SERVICES,
-  type CommonService,
-} from "../lib/common-services";
+import { COMMON_SERVICES } from "../lib/common-services";
+import { getServiceCardsForPages } from "../lib/service-cards";
 import ConsultationChecklist from "./ConsultationChecklist";
 import ConsultationSection from "./ConsultationSection";
 
@@ -42,10 +40,6 @@ type VisibleRegionGroup = {
   district: string;
   region: string;
   pages: RouteResolvableServicePage[];
-};
-
-type MatchedService = CommonService & {
-  page?: RouteResolvableServicePage;
 };
 
 export type PagesByRegion = Array<{
@@ -281,31 +275,6 @@ function getRegionGroups(pagesByRegion: PagesByRegion, selectedRegion: Region) {
   );
 }
 
-function findServicePage(
-  pages: RouteResolvableServicePage[],
-  service: CommonService,
-) {
-  return pages.find((page) => {
-    const title = normalizeRegionName(page.페이지제목).toLowerCase();
-
-    return service.matchKeywords.some((keyword) =>
-      title.includes(normalizeRegionName(keyword).toLowerCase()),
-    );
-  });
-}
-
-function getMatchedServices(pages: RouteResolvableServicePage[]) {
-  return COMMON_SERVICES.reduce<MatchedService[]>((services, service) => {
-    const page = findServicePage(pages, service);
-
-    if (page) {
-      services.push({ ...service, page });
-    }
-
-    return services;
-  }, []);
-}
-
 export default function HomeRegionExplorer({
   pagesByRegion,
 }: {
@@ -313,7 +282,6 @@ export default function HomeRegionExplorer({
 }) {
   const [selectedRegion, setSelectedRegion] = useState<Region>("서울");
   const [selectedDistrict, setSelectedDistrict] = useState("강남구");
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const districts = districtsByRegion[selectedRegion];
   const visibleRegionGroups = useMemo(
@@ -323,25 +291,18 @@ export default function HomeRegionExplorer({
   const selectedGroup = visibleRegionGroups.find(
     ({ district }) => district === selectedDistrict,
   );
-  const matchedServices = selectedGroup
-    ? getMatchedServices(selectedGroup.pages)
-    : getMatchedServices([]);
-  const previewServices = matchedServices.slice(0, 8);
-  const extraServices = matchedServices.slice(8);
-  const displayedServices = isExpanded
-    ? [...previewServices, ...extraServices]
-    : previewServices;
+  const displayedServices = selectedGroup
+    ? getServiceCardsForPages(selectedGroup.pages)
+    : [];
 
   const handleRegionSelect = (region: Region) => {
     const firstDistrict = districtsByRegion[region][0] ?? "";
     setSelectedRegion(region);
     setSelectedDistrict(firstDistrict);
-    setIsExpanded(false);
   };
 
   const handleDistrictSelect = (district: string) => {
     setSelectedDistrict(district);
-    setIsExpanded(false);
 
     document.getElementById("selected-region-services")?.scrollIntoView({
       behavior: "smooth",
@@ -500,49 +461,21 @@ export default function HomeRegionExplorer({
               </div>
 
               {displayedServices.length > 0 ? (
-                <>
-                  <div className="home-link-grid">
-                    {displayedServices.map((service) =>
-                      service.page ? (
-                        <a
-                          className="home-service-link"
-                          href={service.page.href}
-                          key={service.title}
-                        >
-                          <span>{service.title}</span>
-                          <small>
-                            {getDisplayRegionName(service.page.페이지제목)}
-                          </small>
-                          {service.supportNote ? (
-                            <em>{service.supportNote}</em>
-                          ) : null}
-                        </a>
-                      ) : (
-                        <article
-                          className="home-service-link home-service-link-static"
-                          key={service.title}
-                        >
-                          <span>{service.title}</span>
-                          <small>{service.description}</small>
-                          {service.supportNote ? (
-                            <em>{service.supportNote}</em>
-                          ) : null}
-                        </article>
-                      ),
-                    )}
-                  </div>
-
-                  {extraServices.length > 0 ? (
-                    <button
-                      className="home-more-button"
-                      type="button"
-                      aria-expanded={isExpanded}
-                      onClick={() => setIsExpanded((current) => !current)}
+                <div className="home-link-grid">
+                  {displayedServices.map((service) => (
+                    <a
+                      className="home-service-link"
+                      href={service.href}
+                      key={service.slug}
                     >
-                      {isExpanded ? "서비스 접기" : "서비스 더 보기"}
-                    </button>
-                  ) : null}
-                </>
+                      <span>{service.title}</span>
+                      <small>{service.description}</small>
+                      {service.supportNote ? (
+                        <em>{service.supportNote}</em>
+                      ) : null}
+                    </a>
+                  ))}
+                </div>
               ) : (
                 <div className="home-empty-region" role="status">
                   <h3>
