@@ -37,7 +37,9 @@ const initialForm: ConsultationForm = {
 
 const defaultTitle = "현장 내용을 남겨주시면 상담 준비를 돕겠습니다";
 const defaultIntro =
-  "아직 온라인 접수 저장 기능은 연결 전입니다. 입력값 확인 후 안내 문구가 표시되며, 빠른 상담은 전화 연결을 이용해주세요.";
+  "철거 장소와 상담 내용을 남겨주시면 확인 후 연락드리겠습니다. 빠른 상담은 전화 연결도 이용하실 수 있습니다.";
+const consultationScriptUrl =
+  "https://script.google.com/macros/s/AKfycbwomxTDGz-FfsJ3M5ytRosO8zB1N0CXCAyIswernxEjfqYxbj2B8PbuHgqbitXRsbav/exec";
 
 export default function ConsultationSection({
   id = "consultation-section",
@@ -46,12 +48,17 @@ export default function ConsultationSection({
 }: ConsultationSectionProps) {
   const [form, setForm] = useState<ConsultationForm>(initialForm);
   const [formNotice, setFormNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const titleId = `${id}-title`;
   const processTitleId = `${id}-process-title`;
   const fieldPrefix = `${id}-field`;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     const requiredFields = [
       form.name,
@@ -74,9 +81,39 @@ export default function ConsultationSection({
       return;
     }
 
-    setFormNotice(
-      "상담 접수 기능 연결 준비 중입니다. 빠른 상담은 전화 연결을 이용해주세요.",
-    );
+    const formData = new URLSearchParams({
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      region: form.region.trim(),
+      businessType: form.place.trim(),
+      message: form.message.trim(),
+      privacyConsent: "동의",
+    });
+
+    setIsSubmitting(true);
+    setFormNotice("");
+
+    try {
+      await fetch(consultationScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: formData,
+      });
+
+      setForm(initialForm);
+      setFormNotice(
+        "상담 신청이 정상적으로 접수되었습니다. 확인 후 연락드리겠습니다.",
+      );
+    } catch {
+      setFormNotice(
+        "접수 중 오류가 발생했습니다. 잠시 후 다시 시도하거나 전화 상담을 이용해주세요.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -165,7 +202,7 @@ export default function ConsultationSection({
             </label>
             <input
               id={`${fieldPrefix}-place`}
-              name="place"
+              name="businessType"
               type="text"
               value={form.place}
               onChange={(event) =>
@@ -197,8 +234,9 @@ export default function ConsultationSection({
           <div className="home-privacy home-form-full">
             <label>
               <input
-                name="privacyAgreed"
+                name="privacyConsent"
                 type="checkbox"
+                value="동의"
                 checked={form.privacyAgreed}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -228,8 +266,12 @@ export default function ConsultationSection({
           ) : null}
 
           <div className="home-form-actions home-form-full">
-            <button className="home-button home-button-primary" type="submit">
-              무료 상담 신청하기
+            <button
+              className="home-button home-button-primary"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "접수 중..." : "무료 상담 신청하기"}
             </button>
           </div>
 

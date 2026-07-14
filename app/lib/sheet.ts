@@ -1,5 +1,6 @@
 import Papa from "papaparse";
 import { normalizeRegionalPageCopy } from "./regional-page-copy";
+import { enhanceRegionalSeoCopy } from "./regional-seo-copy";
 
 export const SHEET_CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOv6fTn3PBHiV5XBAoz824rgYAwRyU1tfd1-aGrl2Gj8MDHnxAlhwT0-h97ZPc-YTRvyYgOaVumN12/pub?gid=2141467093&single=true&output=csv";
@@ -25,6 +26,8 @@ export type PageData = {
   FAQ2답변: string;
   FAQ3질문: string;
   FAQ3답변: string;
+  FAQ4질문: string;
+  FAQ4답변: string;
 };
 
 export function normalizePageSlug(slug: string) {
@@ -54,5 +57,6 @@ export async function getPages(): Promise<PageData[]> {
 
   return result.data
     .map(normalizePageData)
-    .map(normalizeRegionalPageCopy);
+    .map(normalizeRegionalPageCopy)
+    .map(enhanceRegionalSeoCopy);
 }
