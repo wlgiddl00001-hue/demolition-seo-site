@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   COMMON_SERVICES,
@@ -153,9 +154,9 @@ export default async function RegionOrCommonServicePage({ params }: Props) {
             확인하세요. 아래 링크는 기존 지역별 상세 URL을 그대로 사용합니다.
           </p>
           <div className="common-service-actions">
-            <a className="home-button home-button-primary" href="/#consultation-section">
+            <Link className="home-button home-button-primary" href="/#consultation-section">
               무료 견적 상담
-            </a>
+            </Link>
             <a className="home-button home-button-secondary" href="tel:010-8286-7620">
               010-8286-7620 전화 상담
             </a>
@@ -203,9 +204,9 @@ function CommonServiceDetail({ serviceSlug }: { serviceSlug: string }) {
               <small className="common-service-note">{service.supportNote}</small>
             ) : null}
             <div className="common-service-actions">
-              <a className="home-button home-button-primary" href="/#consultation-section">
+              <Link className="home-button home-button-primary" href="/#consultation-section">
                 무료 견적 상담
-              </a>
+              </Link>
               <a className="home-button home-button-secondary" href="tel:010-8286-7620">
                 010-8286-7620 전화 상담
               </a>
@@ -290,14 +291,14 @@ function CommonServiceDetail({ serviceSlug }: { serviceSlug: string }) {
           </article>
 
           <aside className="common-service-side" aria-label="관련 링크">
-            <a href="/#region-section">지역별 철거 선택으로 돌아가기</a>
-            <a href="/#services-section">업종별 서비스 전체 보기</a>
+            <Link href="/#region-section">지역별 철거 선택으로 돌아가기</Link>
+            <Link href="/#services-section">업종별 서비스 전체 보기</Link>
             <div>
               <h2>관련 서비스</h2>
               {relatedServices.map((item) => (
-                <a href={`/${item.slug}`} key={item.slug}>
+                <Link href={`/${item.slug}`} key={item.slug}>
                   {item.title}
-                </a>
+                </Link>
               ))}
             </div>
           </aside>
