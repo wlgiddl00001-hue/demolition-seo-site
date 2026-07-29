@@ -378,7 +378,10 @@ export default function HomeRegionExplorer({
         </div>
       </section>
 
-      <section className="home-section home-section-muted" aria-labelledby="main-region-links-title">
+      <section
+        className="home-section home-section-muted home-main-region-links"
+        aria-labelledby="main-region-links-title"
+      >
         <div className="home-shell">
           <div className="home-section-header">
             <p className="home-eyebrow">지역별 상담</p>
