@@ -13,7 +13,6 @@ type ConsultationForm = {
   phone: string;
   region: string;
   place: string;
-  message: string;
   privacyAgreed: boolean;
 };
 
@@ -42,13 +41,12 @@ const initialForm: ConsultationForm = {
   phone: "",
   region: "",
   place: "",
-  message: "",
   privacyAgreed: false,
 };
 
 const defaultTitle = "현장 내용을 남겨주시면 상담 준비를 돕겠습니다";
 const defaultIntro =
-  "철거 장소와 상담 내용을 남겨주시면 확인 후 연락드리겠습니다. 빠른 상담은 전화 연결도 이용하실 수 있습니다.";
+  "철거 장소를 남겨주시면 확인 후 연락드리겠습니다. 빠른 상담은 전화 연결도 이용하실 수 있습니다.";
 const consultationScriptUrl =
   "https://script.google.com/macros/s/AKfycbwomxTDGz-FfsJ3M5ytRosO8zB1N0CXCAyIswernxEjfqYxbj2B8PbuHgqbitXRsbav/exec";
 
@@ -66,7 +64,6 @@ export default function ConsultationSection({
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const regionInputRef = useRef<HTMLInputElement>(null);
   const placeInputRef = useRef<HTMLInputElement>(null);
-  const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const privacyInputRef = useRef<HTMLInputElement>(null);
   const titleId = `${id}-title`;
   const processTitleId = `${id}-process-title`;
@@ -136,12 +133,6 @@ export default function ConsultationSection({
       return;
     }
 
-    if (!form.message.trim()) {
-      setNotice({ type: "error", message: "상담 내용을 입력해주세요." });
-      focusField(messageInputRef);
-      return;
-    }
-
     if (!form.privacyAgreed) {
       setNotice({
         type: "error",
@@ -156,7 +147,7 @@ export default function ConsultationSection({
       phone: form.phone.trim(),
       region: form.region.trim(),
       businessType: form.place.trim(),
-      message: form.message.trim(),
+      message: "",
       privacyConsent: "동의",
     });
 
@@ -302,26 +293,6 @@ export default function ConsultationSection({
             />
           </div>
 
-          <div className="home-form-row home-form-full">
-            <label htmlFor={`${fieldPrefix}-message`}>
-              상담 내용 <span className="home-required">*필수</span>
-            </label>
-            <textarea
-              id={`${fieldPrefix}-message`}
-              ref={messageInputRef}
-              name="message"
-              rows={5}
-              value={form.message}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  message: event.target.value,
-                }))
-              }
-              required
-            />
-          </div>
-
           <div className="home-privacy home-form-full">
             <label>
               <input
@@ -341,7 +312,7 @@ export default function ConsultationSection({
               개인정보 수집 및 이용에 동의합니다.
             </label>
             <p>
-              수집 항목: 이름, 연락처, 지역, 철거 장소, 상담 내용
+              수집 항목: 이름, 연락처, 지역, 철거 장소
               <br />
               수집 목적: 철거 및 원상복구 상담 연락
               <br />
