@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { COMMON_SERVICES, type CommonService } from "../lib/common-services";
+import type { InternalLink } from "../lib/internal-links";
 
 type RelatedServicesSidebarProps = {
   currentServiceSlug?: string;
+  links?: InternalLink[];
 };
 
 const priorityServiceSlugs = [
@@ -22,12 +24,18 @@ function isCommonService(service: CommonService | undefined): service is CommonS
 
 export default function RelatedServicesSidebar({
   currentServiceSlug,
+  links,
 }: RelatedServicesSidebarProps) {
-  const relatedServices = priorityServiceSlugs
+  const fallbackLinks = priorityServiceSlugs
     .map((slug) => COMMON_SERVICES.find((service) => service.slug === slug))
     .filter(isCommonService)
     .filter((service) => service.slug !== currentServiceSlug)
-    .slice(0, 4);
+    .slice(0, 4)
+    .map((service) => ({
+      href: `/${service.slug}`,
+      label: service.title,
+    }));
+  const relatedLinks = links?.length ? links : fallbackLinks;
 
   return (
     <aside className="related-services-sidebar" aria-labelledby="related-services-sidebar-title">
@@ -43,13 +51,13 @@ export default function RelatedServicesSidebar({
       <h2 id="related-services-sidebar-title">관련 서비스</h2>
 
       <div className="related-services-sidebar-list">
-        {relatedServices.map((service) => (
+        {relatedLinks.map((link) => (
           <Link
             className="related-services-sidebar-link"
-            href={`/${service.slug}`}
-            key={service.slug}
+            href={link.href}
+            key={link.href}
           >
-            {service.title}
+            {link.label}
           </Link>
         ))}
       </div>

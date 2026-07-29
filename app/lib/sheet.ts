@@ -43,6 +43,25 @@ function normalizePageData(page: PageData): PageData {
   };
 }
 
+function dedupePagesBySlug(pages: PageData[]) {
+  const seenSlugs = new Set<string>();
+
+  return pages.filter((page) => {
+    const slug = normalizePageSlug(page.URL슬러그);
+
+    if (!slug) {
+      return true;
+    }
+
+    if (seenSlugs.has(slug)) {
+      return false;
+    }
+
+    seenSlugs.add(slug);
+    return true;
+  });
+}
+
 export async function getPages(): Promise<PageData[]> {
   const response = await fetch(SHEET_CSV_URL, {
     cache: "no-store",
@@ -55,8 +74,10 @@ export async function getPages(): Promise<PageData[]> {
     skipEmptyLines: true,
   });
 
-  return result.data
+  const pages = result.data
     .map(normalizePageData)
     .map(normalizeRegionalPageCopy)
     .map(enhanceRegionalSeoCopy);
+
+  return dedupePagesBySlug(pages);
 }

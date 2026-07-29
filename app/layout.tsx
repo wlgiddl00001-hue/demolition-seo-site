@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import MobileBottomCTA from "./components/MobileBottomCTA";
+import {
+  createOpenGraphMetadata,
+  SITE_NAME,
+  SITE_URL,
+} from "./lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,18 +19,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://demolition-seo-site.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "전국 상가철거·원상복구 전문업체 | 더세이브",
   description:
     "상가철거, 식당철거, 사무실철거, 학원철거, 폐업철거와 원상복구 상담을 진행합니다.",
-  openGraph: {
+  openGraph: createOpenGraphMetadata({
     title: "전국 상가철거·원상복구 전문업체 | 더세이브",
     description:
       "상가철거, 식당철거, 사무실철거, 학원철거, 폐업철거와 원상복구 상담을 진행합니다.",
-    url: "https://demolition-seo-site.vercel.app",
-    siteName: "더세이브",
-    type: "website",
-  },
+    url: SITE_URL,
+  }),
+  applicationName: SITE_NAME,
   verification: {
     other: {
       "naver-site-verification":

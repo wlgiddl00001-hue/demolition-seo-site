@@ -1,6 +1,12 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import {
+  type FormEvent,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type ConsultationForm = {
   name: string;
@@ -15,6 +21,11 @@ type ConsultationSectionProps = {
   id?: string;
   title?: string;
   intro?: string;
+};
+
+type FormNotice = {
+  type: "success" | "error";
+  message: string;
 };
 
 const processSteps = [
@@ -47,37 +58,96 @@ export default function ConsultationSection({
   intro = defaultIntro,
 }: ConsultationSectionProps) {
   const [form, setForm] = useState<ConsultationForm>(initialForm);
-  const [formNotice, setFormNotice] = useState("");
+  const [formNotice, setFormNotice] = useState<FormNotice | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const regionInputRef = useRef<HTMLInputElement>(null);
+  const placeInputRef = useRef<HTMLInputElement>(null);
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
+  const privacyInputRef = useRef<HTMLInputElement>(null);
   const titleId = `${id}-title`;
   const processTitleId = `${id}-process-title`;
   const fieldPrefix = `${id}-field`;
+  const noticeId = `${id}-notice`;
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const setNotice = (notice: FormNotice) => {
+    setFormNotice(notice);
+  };
+
+  const focusField = <T extends HTMLElement>(ref: RefObject<T | null>) => {
+    ref.current?.focus();
+  };
+
+  const isPhoneNumberValid = (phone: string) => {
+    const digitCount = phone.replace(/\D/g, "").length;
+
+    return digitCount >= 8;
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (isSubmitting) {
+    if (isSubmittingRef.current) {
       return;
     }
 
-    const requiredFields = [
-      form.name,
-      form.phone,
-      form.region,
-      form.place,
-      form.message,
-    ];
-    const hasEmptyRequiredField = requiredFields.some(
-      (value) => !value.trim(),
-    );
+    if (!form.name.trim()) {
+      setNotice({ type: "error", message: "이름을 입력해주세요." });
+      focusField(nameInputRef);
+      return;
+    }
 
-    if (hasEmptyRequiredField) {
-      setFormNotice("필수 항목을 모두 입력해주세요.");
+    if (!form.phone.trim()) {
+      setNotice({ type: "error", message: "연락처를 입력해주세요." });
+      focusField(phoneInputRef);
+      return;
+    }
+
+    if (!isPhoneNumberValid(form.phone)) {
+      setNotice({
+        type: "error",
+        message: "연락 가능한 전화번호를 다시 확인해주세요.",
+      });
+      focusField(phoneInputRef);
+      return;
+    }
+
+    if (!form.region.trim()) {
+      setNotice({ type: "error", message: "지역을 입력해주세요." });
+      focusField(regionInputRef);
+      return;
+    }
+
+    if (!form.place.trim()) {
+      setNotice({
+        type: "error",
+        message: "철거 장소 또는 업종을 입력해주세요.",
+      });
+      focusField(placeInputRef);
+      return;
+    }
+
+    if (!form.message.trim()) {
+      setNotice({ type: "error", message: "상담 내용을 입력해주세요." });
+      focusField(messageInputRef);
       return;
     }
 
     if (!form.privacyAgreed) {
-      setFormNotice("개인정보 수집 및 이용에 동의해주세요.");
+      setNotice({
+        type: "error",
+        message: "개인정보 수집 및 이용에 동의해주세요.",
+      });
+      focusField(privacyInputRef);
       return;
     }
 
@@ -90,8 +160,9 @@ export default function ConsultationSection({
       privacyConsent: "동의",
     });
 
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
-    setFormNotice("");
+    setFormNotice(null);
 
     try {
       await fetch(consultationScriptUrl, {
@@ -103,16 +174,31 @@ export default function ConsultationSection({
         body: formData,
       });
 
+      if (!isMountedRef.current) {
+        return;
+      }
+
       setForm(initialForm);
-      setFormNotice(
-        "상담 신청이 정상적으로 접수되었습니다. 확인 후 연락드리겠습니다.",
-      );
+      setNotice({
+        type: "success",
+        message: "상담 신청이 접수되었습니다. 확인 후 연락드리겠습니다.",
+      });
     } catch {
-      setFormNotice(
-        "접수 중 오류가 발생했습니다. 잠시 후 다시 시도하거나 전화 상담을 이용해주세요.",
-      );
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      setNotice({
+        type: "error",
+        message:
+          "전송 중 문제가 발생했습니다. 잠시 후 다시 시도하거나 전화로 문의해 주세요.",
+      });
     } finally {
-      setIsSubmitting(false);
+      isSubmittingRef.current = false;
+
+      if (isMountedRef.current) {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -152,6 +238,7 @@ export default function ConsultationSection({
             </label>
             <input
               id={`${fieldPrefix}-name`}
+              ref={nameInputRef}
               name="name"
               type="text"
               autoComplete="name"
@@ -169,6 +256,7 @@ export default function ConsultationSection({
             </label>
             <input
               id={`${fieldPrefix}-phone`}
+              ref={phoneInputRef}
               name="phone"
               type="tel"
               autoComplete="tel"
@@ -186,6 +274,7 @@ export default function ConsultationSection({
             </label>
             <input
               id={`${fieldPrefix}-region`}
+              ref={regionInputRef}
               name="region"
               type="text"
               value={form.region}
@@ -202,6 +291,7 @@ export default function ConsultationSection({
             </label>
             <input
               id={`${fieldPrefix}-place`}
+              ref={placeInputRef}
               name="businessType"
               type="text"
               value={form.place}
@@ -218,6 +308,7 @@ export default function ConsultationSection({
             </label>
             <textarea
               id={`${fieldPrefix}-message`}
+              ref={messageInputRef}
               name="message"
               rows={5}
               value={form.message}
@@ -234,6 +325,7 @@ export default function ConsultationSection({
           <div className="home-privacy home-form-full">
             <label>
               <input
+                ref={privacyInputRef}
                 name="privacyConsent"
                 type="checkbox"
                 value="동의"
@@ -260,8 +352,13 @@ export default function ConsultationSection({
           </div>
 
           {formNotice ? (
-            <p className="home-form-notice" role="status" aria-live="polite">
-              {formNotice}
+            <p
+              className={`home-form-notice home-form-notice-${formNotice.type}`}
+              id={noticeId}
+              role={formNotice.type === "error" ? "alert" : "status"}
+              aria-live={formNotice.type === "error" ? "assertive" : "polite"}
+            >
+              {formNotice.message}
             </p>
           ) : null}
 
@@ -270,8 +367,9 @@ export default function ConsultationSection({
               className="home-button home-button-primary"
               type="submit"
               disabled={isSubmitting}
+              aria-describedby={formNotice ? noticeId : undefined}
             >
-              {isSubmitting ? "접수 중..." : "무료 상담 신청하기"}
+              {isSubmitting ? "전송 중..." : "무료 상담 신청하기"}
             </button>
           </div>
 

@@ -597,6 +597,28 @@ img {
   color: #92400e;
   font-size: 15px;
   font-weight: 800;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.home-form-notice-success {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.home-form-notice-error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.home-button:disabled,
+.home-button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.68;
+  transform: none;
+  box-shadow: none;
 }
 
 .home-region-consult {

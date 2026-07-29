@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { COMMON_SERVICES } from "../lib/common-services";
+import type { InternalLink } from "../lib/internal-links";
 import { getServiceCardsForPages } from "../lib/service-cards";
 import ConsultationChecklist from "./ConsultationChecklist";
 import ConsultationSection from "./ConsultationSection";
@@ -276,8 +277,10 @@ function getRegionGroups(pagesByRegion: PagesByRegion, selectedRegion: Region) {
 }
 
 export default function HomeRegionExplorer({
+  mainRegionLinks,
   pagesByRegion,
 }: {
+  mainRegionLinks: InternalLink[];
   pagesByRegion: PagesByRegion;
 }) {
   const [selectedRegion, setSelectedRegion] = useState<Region>("서울");
@@ -375,6 +378,23 @@ export default function HomeRegionExplorer({
         </div>
       </section>
 
+      <section className="home-section home-section-muted" aria-labelledby="main-region-links-title">
+        <div className="home-shell">
+          <div className="home-section-header">
+            <p className="home-eyebrow">지역별 상담</p>
+            <h2 id="main-region-links-title">주요 지역 철거 상담 바로가기</h2>
+          </div>
+          <div className="home-link-grid">
+            {mainRegionLinks.map((link) => (
+              <a className="home-service-link" href={link.href} key={link.href}>
+                <span>{link.label}</span>
+                {link.description ? <small>{link.description}</small> : null}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="home-section home-section-muted" aria-labelledby="strength-title">
         <div className="home-shell">
           <div className="home-section-header">
@@ -455,8 +475,7 @@ export default function HomeRegionExplorer({
               <div className="home-selected-service-header">
                 <h3>{getDisplayRegionName(selectedDistrict)} 철거 서비스</h3>
                 <p>
-                  {getDisplayRegionName(selectedDistrict)}에서 제공되는 업종별
-                  철거 및 원상복구 안내를 확인하세요.
+                  {`${getDisplayRegionName(selectedDistrict)}에서 제공되는 업종별 철거 및 원상복구 안내를 확인하세요.`}
                 </p>
               </div>
 

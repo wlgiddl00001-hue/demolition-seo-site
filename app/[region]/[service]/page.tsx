@@ -1,11 +1,23 @@
 import { getPages, normalizePageSlug, type PageData } from "../../lib/sheet";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import ConsultationChecklist from "../../components/ConsultationChecklist";
 import ConsultationSection from "../../components/ConsultationSection";
 import RelatedServicesSidebar from "../../components/RelatedServicesSidebar";
+import { getDetailRelatedLinks } from "../../lib/internal-links";
+import {
+  createBreadcrumbJsonLd,
+  createFaqPageJsonLd,
+  createOpenGraphMetadata,
+  createTwitterMetadata,
+  createWebPageJsonLd,
+  JsonLd,
+  SERVICE_OG_IMAGE,
+  SITE_URL,
+} from "../../lib/seo";
 
-const BASE_URL = "https://demolition-seo-site.vercel.app";
+const BASE_URL = SITE_URL;
 
 type Props = {
   params: Promise<{
@@ -39,6 +51,23 @@ function getStableVariant(seed: string, modulo: number) {
   return value % modulo;
 }
 
+function getPageSeo(page: PageData, slug: string) {
+  return {
+    title: page.페이지제목,
+    description: page.메타설명,
+    canonical: `${BASE_URL}${slug}`,
+  };
+}
+
+function getPageFaqItems(page: PageData) {
+  return [
+    { question: page.FAQ1질문, answer: page.FAQ1답변 },
+    { question: page.FAQ2질문, answer: page.FAQ2답변 },
+    { question: page.FAQ3질문, answer: page.FAQ3답변 },
+    { question: page.FAQ4질문, answer: page.FAQ4답변 },
+  ];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, service } = await params;
   const pages = await getPages();
@@ -47,26 +76,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = findPageBySlug(pages, slug);
 
   if (!page) {
-    return {
-      title: "페이지를 찾을 수 없습니다",
-      description: "요청한 철거 페이지를 찾을 수 없습니다.",
-    };
+    notFound();
   }
 
-  const canonical = `${BASE_URL}${slug}`;
+  const seo = getPageSeo(page, slug);
 
   return {
-    title: page.페이지제목,
-    description: page.메타설명,
+    title: seo.title,
+    description: seo.description,
     alternates: {
-      canonical,
+      canonical: seo.canonical,
     },
-    openGraph: {
-      title: page.페이지제목,
-      description: page.메타설명,
-      url: canonical,
-      siteName: "더세이브",
-      type: "website",
+    openGraph: createOpenGraphMetadata({
+      title: seo.title,
+      description: seo.description,
+      url: seo.canonical,
+      image: SERVICE_OG_IMAGE,
+    }),
+    twitter: createTwitterMetadata({
+      title: seo.title,
+      description: seo.description,
+      image: SERVICE_OG_IMAGE,
+    }),
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -79,12 +113,7 @@ export default async function ServicePage({ params }: Props) {
   const page = findPageBySlug(pages, slug);
 
   if (!page) {
-    return (
-      <main style={{ padding: "40px" }}>
-        <h1>페이지를 찾을 수 없습니다</h1>
-        <p>요청한 주소: {slug}</p>
-      </main>
-    );
+    notFound();
   }
   const contentTitleVariants = [
     `${page.지역} ${page.서비스} 현장 체크포인트`,
@@ -142,7 +171,27 @@ export default async function ServicePage({ params }: Props) {
     sectionOrderVariants[getStableVariant(`${slug}:section-order`, sectionOrderVariants.length)];
   const heroTitle = page.H1 || `${page.지역} ${getHeroServiceLabel(page.서비스)} 상담 안내`;
   const heroDescription = page.본문요약 || page.메타설명;
+  const seo = getPageSeo(page, slug);
+  const regionUrl = `${BASE_URL}/${region}`;
+  const faqJsonLd = createFaqPageJsonLd(getPageFaqItems(page));
+  const relatedLinks = getDetailRelatedLinks(pages, slug, 10);
     return (
+    <>
+      <JsonLd
+        data={[
+          createWebPageJsonLd({
+            name: seo.title,
+            description: seo.description,
+            url: seo.canonical,
+          }),
+          createBreadcrumbJsonLd([
+            { name: "홈", item: BASE_URL },
+            { name: `${page.지역} 철거·원상복구 상담`, item: regionUrl },
+            { name: seo.title, item: seo.canonical },
+          ]),
+          faqJsonLd,
+        ].filter(Boolean)}
+      />
     <main
       className="service-page"
       style={{
@@ -245,7 +294,10 @@ export default async function ServicePage({ params }: Props) {
 
       <section className="service-page-body" style={{ padding: "48px 24px" }}>
         <div className="regional-service-layout">
-          <RelatedServicesSidebar currentServiceSlug={service} />
+          <RelatedServicesSidebar
+            currentServiceSlug={service}
+            links={relatedLinks}
+          />
           <div className="regional-service-main">
         <div style={{ width: "100%", maxWidth: "960px", margin: "0 auto" }}>
           <img
@@ -462,5 +514,6 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
     </main>
+    </>
   );
 }

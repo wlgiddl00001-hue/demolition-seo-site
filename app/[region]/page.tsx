@@ -5,14 +5,27 @@ import {
   COMMON_SERVICES,
   getCommonServiceBySlug,
 } from "../lib/common-services";
+import {
+  getCommonServiceRelatedLinks,
+  getRegionServiceLinks,
+} from "../lib/internal-links";
 import { getPages, normalizePageSlug, type PageData } from "../lib/sheet";
 import {
   getRegionSlugFromUrlSlug,
-  getServiceCardsForPages,
 } from "../lib/service-cards";
+import {
+  createBreadcrumbJsonLd,
+  createFaqPageJsonLd,
+  createOpenGraphMetadata,
+  createTwitterMetadata,
+  createWebPageJsonLd,
+  JsonLd,
+  SERVICE_OG_IMAGE,
+  SITE_URL,
+} from "../lib/seo";
 import ConsultationSection from "../components/ConsultationSection";
 
-const BASE_URL = "https://demolition-seo-site.vercel.app";
+const BASE_URL = SITE_URL;
 
 type Props = {
   params: Promise<{
@@ -68,6 +81,26 @@ function getUniqueRegionSlugs(pages: PageData[]) {
   );
 }
 
+function getCommonServiceSeo(service: (typeof COMMON_SERVICES)[number]) {
+  const canonical = `${BASE_URL}/${service.slug}`;
+
+  return {
+    title: service.metaTitle,
+    description: service.metaDescription,
+    canonical,
+  };
+}
+
+function getRegionSeo(regionName: string, regionSlug: string) {
+  const canonical = `${BASE_URL}/${regionSlug}`;
+
+  return {
+    title: `${regionName} 철거·원상복구 상담 | 더세이브`,
+    description: `${regionName} 상가철거, 식당철거, 사무실철거, 폐업철거와 원상복구 상담 페이지를 확인하세요.`,
+    canonical,
+  };
+}
+
 export async function generateStaticParams() {
   const pages = await getPages();
   const regionParams = getUniqueRegionSlugs(pages).map((region) => ({
@@ -85,20 +118,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const commonService = getCommonServiceBySlug(region);
 
   if (commonService) {
-    const canonical = `${BASE_URL}/${commonService.slug}`;
+    const seo = getCommonServiceSeo(commonService);
 
     return {
-      title: commonService.metaTitle,
-      description: commonService.metaDescription,
+      title: seo.title,
+      description: seo.description,
       alternates: {
-        canonical,
+        canonical: seo.canonical,
       },
-      openGraph: {
-        title: commonService.metaTitle,
-        description: commonService.metaDescription,
-        url: canonical,
-        siteName: "더세이브",
-        type: "website",
+      openGraph: createOpenGraphMetadata({
+        title: seo.title,
+        description: seo.description,
+        url: seo.canonical,
+        image: SERVICE_OG_IMAGE,
+      }),
+      twitter: createTwitterMetadata({
+        title: seo.title,
+        description: seo.description,
+        image: SERVICE_OG_IMAGE,
+      }),
+      robots: {
+        index: true,
+        follow: true,
       },
     };
   }
@@ -107,20 +148,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const regionPages = getRegionPages(pages, region);
 
   if (regionPages.length === 0) {
-    return {
-      title: "페이지를 찾을 수 없습니다",
-      description: "요청한 철거 상담 페이지를 찾을 수 없습니다.",
-    };
+    notFound();
   }
 
   const regionName = getRegionName(regionPages, region);
-  const canonical = `${BASE_URL}/${region}`;
+  const seo = getRegionSeo(regionName, region);
 
   return {
-    title: `${regionName} 철거·원상복구 상담 | 더세이브`,
-    description: `${regionName} 상가철거, 식당철거, 사무실철거, 폐업철거와 원상복구 상담 페이지를 확인하세요.`,
+    title: seo.title,
+    description: seo.description,
     alternates: {
-      canonical,
+      canonical: seo.canonical,
+    },
+    openGraph: createOpenGraphMetadata({
+      title: seo.title,
+      description: seo.description,
+      url: seo.canonical,
+      image: SERVICE_OG_IMAGE,
+    }),
+    twitter: createTwitterMetadata({
+      title: seo.title,
+      description: seo.description,
+      image: SERVICE_OG_IMAGE,
+    }),
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -141,68 +194,33 @@ export default async function RegionOrCommonServicePage({ params }: Props) {
   }
 
   const regionName = getRegionName(regionPages, region);
-  const serviceCards = getServiceCardsForPages(regionPages, region);
+  const regionServiceLinks = getRegionServiceLinks(pages, region, 12);
+  const seo = getRegionSeo(regionName, region);
 
   return (
-    <main className="region-index-page">
-      <section className="region-index-hero">
-        <div className="home-shell">
-          <p className="home-eyebrow">지역별 철거 상담</p>
-          <h1>{regionName} 철거·원상복구 상담</h1>
-          <p>
-            {regionName}에서 제공되는 업종별 철거 및 원상복구 상세페이지를
-            확인하세요. 아래 링크는 기존 지역별 상세 URL을 그대로 사용합니다.
-          </p>
-          <div className="common-service-actions">
-            <Link className="home-button home-button-primary" href="/#consultation-section">
-              무료 견적 상담
-            </Link>
-            <a className="home-button home-button-secondary" href="tel:010-8286-7620">
-              010-8286-7620 전화 상담
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section className="region-index-body">
-        <div className="home-shell">
-          <div className="home-link-grid">
-            {serviceCards.map((service) => (
-              <a className="home-service-link" href={service.href} key={service.slug}>
-                <span>{service.title}</span>
-                <small>{service.description}</small>
-                {service.supportNote ? <em>{service.supportNote}</em> : null}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function CommonServiceDetail({ serviceSlug }: { serviceSlug: string }) {
-  const service = getCommonServiceBySlug(serviceSlug);
-
-  if (!service) {
-    notFound();
-  }
-
-  const relatedServices = COMMON_SERVICES.filter(
-    (item) => item.slug !== service.slug,
-  ).slice(0, 4);
-
-  return (
-    <main className="common-service-page">
-      <section className="common-service-hero">
-        <div className="home-shell common-service-hero-grid">
-          <div>
-            <p className="home-eyebrow">더세이브 업종별 철거 상담</p>
-            <h1>{service.title}</h1>
-            <p>{service.intro}</p>
-            {service.supportNote ? (
-              <small className="common-service-note">{service.supportNote}</small>
-            ) : null}
+    <>
+      <JsonLd
+        data={[
+          createWebPageJsonLd({
+            name: seo.title,
+            description: seo.description,
+            url: seo.canonical,
+          }),
+          createBreadcrumbJsonLd([
+            { name: "홈", item: BASE_URL },
+            { name: `${regionName} 철거·원상복구 상담`, item: seo.canonical },
+          ]),
+        ]}
+      />
+      <main className="region-index-page">
+        <section className="region-index-hero">
+          <div className="home-shell">
+            <p className="home-eyebrow">지역별 철거 상담</p>
+            <h1>{regionName} 철거·원상복구 상담</h1>
+            <p>
+              {regionName}에서 제공되는 업종별 철거 및 원상복구 상세페이지를
+              확인하세요. 아래 링크는 기존 지역별 상세 URL을 그대로 사용합니다.
+            </p>
             <div className="common-service-actions">
               <Link className="home-button home-button-primary" href="/#consultation-section">
                 무료 견적 상담
@@ -212,103 +230,170 @@ function CommonServiceDetail({ serviceSlug }: { serviceSlug: string }) {
               </a>
             </div>
           </div>
-          <img
-            src="/service-banner.png"
-            alt={`${service.title} 상담 안내 이미지`}
-          />
-        </div>
-      </section>
+        </section>
 
-      <section className="common-service-body">
-        <div className="home-shell common-service-layout">
-          <article className="common-service-content">
-            <section>
-              <h2>서비스 개요</h2>
-              <p>{service.description}</p>
-              <p>{service.intro}</p>
-            </section>
-
-            <section>
-              <h2>주로 철거하는 시설과 설비</h2>
-              <ul>
-                {service.facilities.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section>
-              <h2>작업 전 확인사항</h2>
-              <ul>
-                {service.checks.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section>
-              <h2>철거 범위와 폐기물 정리</h2>
-              <ul>
-                {service.scope.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section>
-              <h2>원상복구와 마감 확인</h2>
-              <p>{service.restoration}</p>
-            </section>
-
-            <section>
-              <h2>작업 기간과 견적에 영향을 주는 요소</h2>
-              <p>{service.estimate}</p>
-            </section>
-
-            <section>
-              <h2>상담 절차</h2>
-              <ol>
-                <li>전화 또는 상담 폼으로 현장 정보를 접수합니다.</li>
-                <li>면적, 업종, 폐기물 양, 원상복구 기준을 확인합니다.</li>
-                <li>필요 시 현장 사진이나 방문 확인으로 작업 범위를 정리합니다.</li>
-                <li>견적과 일정을 안내하고 작업 가능 시간을 조율합니다.</li>
-                <li>철거, 폐기물 정리, 마감 확인 순서로 진행합니다.</li>
-              </ol>
-            </section>
-
-            <section>
-              <h2>자주 묻는 질문</h2>
-              <div className="common-service-faq">
-                {service.faq.map((item) => (
-                  <div key={item.question}>
-                    <h3>{item.question}</h3>
-                    <p>{item.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-          </article>
-
-          <aside className="common-service-side" aria-label="관련 링크">
-            <Link href="/#region-section">지역별 철거 선택으로 돌아가기</Link>
-            <Link href="/#services-section">업종별 서비스 전체 보기</Link>
-            <div>
-              <h2>관련 서비스</h2>
-              {relatedServices.map((item) => (
-                <Link href={`/${item.slug}`} key={item.slug}>
-                  {item.title}
-                </Link>
+        <section className="region-index-body">
+          <div className="home-shell">
+            <div className="home-link-grid">
+              {regionServiceLinks.map((link) => (
+                <a className="home-service-link" href={link.href} key={link.href}>
+                  <span>{link.label}</span>
+                  {link.description ? <small>{link.description}</small> : null}
+                </a>
               ))}
             </div>
-          </aside>
-        </div>
-      </section>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}
 
-      <ConsultationSection
-        id="common-service-consultation"
-        title={`${getConsultationServiceName(service.title)} 상담 신청`}
+async function CommonServiceDetail({ serviceSlug }: { serviceSlug: string }) {
+  const service = getCommonServiceBySlug(serviceSlug);
+
+  if (!service) {
+    notFound();
+  }
+
+  const pages = await getPages();
+  const relatedLinks = getCommonServiceRelatedLinks(pages, service.slug, 10);
+  const seo = getCommonServiceSeo(service);
+  const faqJsonLd = createFaqPageJsonLd(service.faq);
+
+  return (
+    <>
+      <JsonLd
+        data={[
+          createWebPageJsonLd({
+            name: seo.title,
+            description: seo.description,
+            url: seo.canonical,
+          }),
+          createBreadcrumbJsonLd([
+            { name: "홈", item: BASE_URL },
+            { name: service.title, item: seo.canonical },
+          ]),
+          faqJsonLd,
+        ].filter(Boolean)}
       />
-    </main>
+      <main className="common-service-page">
+        <section className="common-service-hero">
+          <div className="home-shell common-service-hero-grid">
+            <div>
+              <p className="home-eyebrow">더세이브 업종별 철거 상담</p>
+              <h1>{service.title}</h1>
+              <p>{service.intro}</p>
+              {service.supportNote ? (
+                <small className="common-service-note">{service.supportNote}</small>
+              ) : null}
+              <div className="common-service-actions">
+                <Link className="home-button home-button-primary" href="/#consultation-section">
+                  무료 견적 상담
+                </Link>
+                <a className="home-button home-button-secondary" href="tel:010-8286-7620">
+                  010-8286-7620 전화 상담
+                </a>
+              </div>
+            </div>
+            <img
+              src="/service-banner.png"
+              alt={`${service.title} 상담 안내 이미지`}
+            />
+          </div>
+        </section>
+
+        <section className="common-service-body">
+          <div className="home-shell common-service-layout">
+            <article className="common-service-content">
+              <section>
+                <h2>서비스 개요</h2>
+                <p>{service.description}</p>
+                <p>{service.intro}</p>
+              </section>
+
+              <section>
+                <h2>주로 철거하는 시설과 설비</h2>
+                <ul>
+                  {service.facilities.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h2>작업 전 확인사항</h2>
+                <ul>
+                  {service.checks.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h2>철거 범위와 폐기물 정리</h2>
+                <ul>
+                  {service.scope.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h2>원상복구와 마감 확인</h2>
+                <p>{service.restoration}</p>
+              </section>
+
+              <section>
+                <h2>작업 기간과 견적에 영향을 주는 요소</h2>
+                <p>{service.estimate}</p>
+              </section>
+
+              <section>
+                <h2>상담 절차</h2>
+                <ol>
+                  <li>전화 또는 상담 폼으로 현장 정보를 접수합니다.</li>
+                  <li>면적, 업종, 폐기물 양, 원상복구 기준을 확인합니다.</li>
+                  <li>필요 시 현장 사진이나 방문 확인으로 작업 범위를 정리합니다.</li>
+                  <li>견적과 일정을 안내하고 작업 가능 시간을 조율합니다.</li>
+                  <li>철거, 폐기물 정리, 마감 확인 순서로 진행합니다.</li>
+                </ol>
+              </section>
+
+              <section>
+                <h2>자주 묻는 질문</h2>
+                <div className="common-service-faq">
+                  {service.faq.map((item) => (
+                    <div key={item.question}>
+                      <h3>{item.question}</h3>
+                      <p>{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+            </article>
+
+            <aside className="common-service-side" aria-label="관련 링크">
+              <Link href="/#region-section">지역별 철거 선택으로 돌아가기</Link>
+              <Link href="/#services-section">업종별 서비스 전체 보기</Link>
+              <div>
+                <h2>관련 서비스</h2>
+                {relatedLinks.map((item) => (
+                  <Link href={item.href} key={item.href}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <ConsultationSection
+          id="common-service-consultation"
+          title={`${getConsultationServiceName(service.title)} 상담 신청`}
+        />
+      </main>
+    </>
   );
 }

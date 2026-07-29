@@ -770,6 +770,18 @@ function joinItems(items: string[], count = 3) {
   return items.slice(0, count).join(", ");
 }
 
+function joinProcessSteps(items: string[]) {
+  return items.join(" → ");
+}
+
+function getServiceFocus(service: ServiceSeoData) {
+  return `${service.equipment[0]}, ${service.equipment[1]}, ${service.precheck[0]}`;
+}
+
+function getWasteFocus(service: ServiceSeoData) {
+  return `${service.waste[0]}, ${service.waste[1]}`;
+}
+
 function getRegionGroup(regionSlug: string) {
   return REGION_GROUPS[REGION_GROUP_BY_SLUG[regionSlug] ?? "residentialMixed"];
 }
@@ -840,10 +852,10 @@ function buildMetaDescription(regionName: string, service: ServiceSeoData, regio
 
 function buildSummary(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const templates = [
-    `${regionName}에서 ${service.label} 매장을 정리할 때는 ${joinItems(service.equipment, 3)} 같은 핵심 설비와 ${withObjectParticle(regionGroup.titleFocus)} 함께 확인해야 합니다. ${regionGroup.consultation}`,
-    `${service.title} 상담은 내부를 비우는 일보다 ${joinItems(service.precheck, 2)}, 폐기물 반출 방식, 원상복구 기준을 먼저 나누는 과정이 중요합니다. ${regionName} 현장 조건에 맞춰 작업 순서를 안내합니다.`,
-    `${regionGroup.intro} ${service.label} 현장은 ${joinItems(service.equipment, 3)} 상태에 따라 철거 범위와 견적 기준이 달라질 수 있습니다.`,
-    `${regionName} ${service.label} 철거는 ${regionGroup.access} ${service.cta}`,
+    `${regionName} ${service.label} 철거는 ${withObjectParticle(getServiceFocus(service))} 중심으로 범위를 나누고, ${regionGroup.titleFocus}까지 함께 확인하는 방식으로 상담합니다.`,
+    `${regionName} ${service.title} 상담은 내부를 비우는 일에서 끝나지 않습니다. ${withAndParticle(joinItems(service.precheck, 2))} 폐기물 반출 방식, 원상복구 기준을 먼저 구분해 작업 순서를 잡습니다.`,
+    `${regionName} 현장 조건에 따라 ${joinItems(service.equipment, 3)} 상태와 반출 동선이 달라질 수 있습니다. ${service.label} 작업에서 필요한 철거 범위와 남겨야 할 설비를 먼저 확인합니다.`,
+    `${regionName} ${service.label} 매장은 ${getWasteFocus(service)}처럼 폐기물 성격이 갈리는 항목이 있어 분류와 상차 순서를 미리 정하는 편이 안정적입니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:summary`, templates.length)]);
@@ -851,9 +863,10 @@ function buildSummary(regionName: string, service: ServiceSeoData, regionGroup: 
 
 function buildIntro(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const templates = [
-    `${regionGroup.intro} ${regionName} ${service.label} 현장은 ${withObjectParticle(joinItems(service.equipment, 3))} 먼저 살펴야 철거 범위와 원상복구 수준을 무리 없이 나눌 수 있습니다.`,
-    `${regionName}에서 ${service.title} 상담을 진행할 때는 ${withAndParticle(service.precheck[0])} ${regionGroup.titleFocus}가 함께 검토됩니다. 현장 구조에 맞춰 철거할 부분과 남길 부분을 표시하는 과정이 필요합니다.`,
-    `${service.label} 철거는 ${joinItems(service.scope, 2)}만으로 끝나지 않습니다. ${regionGroup.access} 임대차 기준과 실제 마감 상태를 같이 확인해야 합니다.`,
+    `${regionName} ${service.label} 현장은 ${withObjectParticle(joinItems(service.equipment, 3))} 먼저 살펴야 철거 범위와 원상복구 수준을 무리 없이 나눌 수 있습니다.`,
+    `${regionName}에서 ${service.title} 상담을 진행할 때는 ${withAndParticle(service.precheck[0])} ${regionGroup.titleFocus}가 함께 검토됩니다. ${regionName} 현장에서 남길 설비와 철거할 부분을 기준별로 구분합니다.`,
+    `${regionName} ${service.label} 철거는 ${joinItems(service.scope, 2)}만으로 끝나지 않습니다. 임대차 기준, 건물 관리 규정, 실제 마감 상태를 비교해 ${service.label} 복구 범위를 확인합니다.`,
+    `${regionName} 상담에서는 ${withObjectParticle(regionGroup.titleFocus)} 먼저 보고, ${service.label} 특유의 ${joinItems(service.equipment, 2)} 상태를 함께 확인합니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:intro`, templates.length)]);
@@ -861,9 +874,10 @@ function buildIntro(regionName: string, service: ServiceSeoData, regionGroup: Re
 
 function buildFeature(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const templates = [
-    `${service.label} 현장에서는 ${joinItems(service.equipment, 4)} 항목을 주요 확인 대상으로 봅니다. ${regionName}처럼 ${regionGroup.name} 성격이 반영되는 곳은 ${regionGroup.access}`,
-    `${regionGroup.consultation} 여기에 ${service.precheck.join(", ")}까지 겹치면 작업 순서와 반출 시간이 달라질 수 있습니다.`,
-    `${regionName} ${service.label} 철거 상담에서는 ${withAndParticle(service.equipment[0])} ${withObjectParticle(service.equipment[1])} 먼저 보고, ${regionGroup.schedule} ${service.precheck[0]}도 함께 확인합니다.`,
+    `${regionName} ${service.label} 현장에서는 ${joinItems(service.equipment, 4)} 항목을 주요 확인 대상으로 봅니다. 특히 ${withAndParticle(service.precheck[0])} ${service.precheck[1]} 상태가 작업 순서에 영향을 줍니다.`,
+    `${regionName} ${service.label} 상담에서는 ${withObjectParticle(service.precheck.join(", "))} 확인해 철거할 설비와 보존할 설비를 나눕니다.`,
+    `${regionGroup.consultation} 이후 ${service.label} 특성에 맞춰 ${joinItems(service.scope, 3)} 범위를 정리합니다.`,
+    `${regionName} 현장에서 ${service.equipment[0]} 및 ${withObjectParticle(service.equipment[1])} 먼저 확인하면 폐기물 분류, 반출 동선, 원상복구 마감 기준을 더 정확히 나눌 수 있습니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:feature`, templates.length)]);
@@ -871,9 +885,11 @@ function buildFeature(regionName: string, service: ServiceSeoData, regionGroup: 
 
 function buildScope(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const templates = [
-    `철거 범위는 ${service.scope.join(", ")}로 나누어 확인합니다. ${regionGroup.waste}`,
+    `${regionName} ${service.label} 철거 범위는 ${service.scope.join(", ")} 항목으로 나누어 확인합니다. ${getWasteFocus(service)}는 분류와 반출 방식을 따로 정리합니다.`,
     `${service.label} 전체 철거와 부분 철거는 기준이 다릅니다. ${joinItems(service.scope, 3)} 중 실제로 필요한 범위만 정하고, ${regionName} 현장의 반출 조건에 맞춰 폐기물 순서를 잡습니다.`,
-    `${service.equipment[0]}부터 ${service.equipment[service.equipment.length - 1]}까지 모두 철거 대상이 되는 것은 아닙니다. 남길 설비, 임대인 확인이 필요한 마감, 먼저 반출할 폐기물을 분리해 범위를 정합니다.`,
+    `${regionName} 현장에서는 ${service.equipment[0]}부터 ${service.equipment[service.equipment.length - 1]}까지 모두 철거 대상이 되는 것은 아닙니다. ${service.label} 현장에서 남길 설비와 임대인 확인이 필요한 마감을 구분합니다.`,
+    `${service.label} 철거 범위는 ${withAndParticle(service.precheck[0])} ${withObjectParticle(service.precheck[1])} 확인한 뒤 내부 철거, 폐기물 반출, 원상복구 확인 항목으로 나눕니다.`,
+    `${regionGroup.titleFocus}이 중요한 현장에서는 ${withObjectParticle(joinItems(service.scope, 2))} 먼저 정하고 공용부 보호와 상차 시간을 함께 검토합니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:scope`, templates.length)]);
@@ -881,10 +897,11 @@ function buildScope(regionName: string, service: ServiceSeoData, regionGroup: Re
 
 function buildProcess(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const variants = [
-    `작업 전에는 ${service.precheck.join(", ")}를 먼저 확인합니다. 이후 ${service.process.join(" -> ")} 순서로 현장에 맞게 조율합니다.`,
-    `${regionName} 현장에서는 ${regionGroup.titleFocus} 때문에 반출 계획을 먼저 잡는 경우가 있습니다. 그 다음 ${service.process.slice(0, 3).join(", ")}를 순서대로 진행합니다.`,
-    `${service.label} 철거는 상담, 사진 확인, 현장 범위 표시, 일정 조율, 철거와 폐기물 반출, 마감 확인 순서로 정리합니다. 세부 공정은 ${joinItems(service.precheck, 2)} 결과에 따라 달라집니다.`,
-    `임대차 원상복구 기준을 먼저 확인한 뒤 ${service.process.join(", ")}를 나눠 진행합니다. ${regionGroup.schedule}`,
+    `작업 전에는 ${withObjectParticle(service.precheck.join(", "))} 먼저 확인합니다. 이후 ${joinProcessSteps(service.process)} 순서로 현장에 맞게 조율합니다.`,
+    `${regionName} 현장에서는 ${regionGroup.titleFocus} 때문에 반출 계획을 먼저 잡는 경우가 있습니다. 그 다음 ${withObjectParticle(service.process.slice(0, 3).join(", "))} 순서대로 진행합니다.`,
+    `${service.label} 철거는 ${service.process[0]} 이후 ${service.process[1]}, ${service.process[2]} 순서로 이어집니다. 세부 공정은 ${withObjectParticle(joinItems(service.precheck, 2))} 확인한 뒤 조정합니다.`,
+    `임대차 원상복구 기준을 먼저 확인한 뒤 ${withObjectParticle(service.process.join(", "))} 나눠 진행합니다. ${regionGroup.schedule}`,
+    `${service.label} 현장은 설비 차단과 보존 대상 표시가 중요합니다. ${joinProcessSteps(service.process.slice(0, 4))} 흐름으로 정리하고 마지막에 마감 상태를 확인합니다.`,
   ];
 
   return normalizeSpaces(variants[stableIndex(`${seed}:process`, variants.length)]);
@@ -895,6 +912,8 @@ function buildEstimate(regionName: string, service: ServiceSeoData, regionGroup:
     `${service.estimate} ${regionName} 현장은 ${regionGroup.access}`,
     `견적은 단순 면적보다 ${joinItems(service.precheck, 3)}, 폐기물 양, 작업 가능 시간에 따라 달라집니다. ${regionGroup.schedule}`,
     `${service.label} 철거 비용을 확인할 때는 ${service.equipment[0]} 수량과 ${service.equipment[1]} 상태, 반출 거리, 원상복구 범위를 함께 봅니다. ${regionGroup.titleFocus}도 일정 산정에 반영됩니다.`,
+    `${regionName} 현장의 면적, 층수, 엘리베이터 사용 가능 여부, 차량 진입 조건은 ${service.label} 견적에 함께 반영됩니다. ${joinItems(service.scope, 2)} 범위가 넓으면 폐기물 양과 작업 시간이 달라질 수 있습니다.`,
+    `${regionName} ${service.label} 견적은 ${joinItems(service.equipment, 2)} 상태만으로 단정하기 어렵습니다. ${regionName} 현장 사진, 반출 거리, 야간·주말 작업 가능 여부, 복구 범위를 같이 확인합니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:estimate`, templates.length)]);
@@ -903,19 +922,45 @@ function buildEstimate(regionName: string, service: ServiceSeoData, regionGroup:
 function buildCaution(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
   const templates = [
     `${service.caution} ${regionGroup.restoration}`,
-    `${service.waste.join(", ")}처럼 폐기물 성격이 다른 항목은 현장에서 분류 기준을 먼저 정해야 합니다. ${regionName} 현장에서는 ${regionGroup.waste}`,
+    `${regionName} ${service.label} 현장의 ${service.waste.join(", ")}처럼 폐기물 성격이 다른 항목은 분류 기준을 먼저 정해야 합니다. ${regionName} 반출 동선과 임시 적치 위치도 함께 확인합니다.`,
     `철거를 급하게 시작하기보다 ${service.precheck[0]}, ${service.precheck[1]}, 원상복구 검수 기준을 먼저 확인하는 편이 좋습니다. ${regionGroup.restoration}`,
+    `${regionName} ${service.label} 현장은 남겨야 할 설비와 철거할 설비가 섞여 있을 수 있습니다. 작업 전 사진을 남기고 ${regionName} 관리 기준에 맞춰 바닥·벽·천장 마감 상태를 확인합니다.`,
+    `${regionName} 현장에서는 폐기물 상차 시간과 공용부 보호 범위를 미리 맞추는 것이 좋습니다. ${service.waste[0]}와 ${service.waste[1]}는 분리 기준을 현장에서 확인합니다.`,
   ];
 
   return normalizeSpaces(templates[stableIndex(`${seed}:caution`, templates.length)]);
 }
 
 function buildFaq(regionName: string, service: ServiceSeoData, regionGroup: RegionGroup, seed: string) {
-  const regionQuestion = {
-    question: `${regionName} 현장은 반출 시간을 따로 조율해야 하나요?`,
-    answer: `${regionGroup.schedule} ${regionGroup.access}`,
-  };
-  const faq = [...service.faq];
+  const regionQuestions = [
+    {
+      question: `${regionName} ${service.label} 철거 견적은 어떤 기준으로 달라지나요?`,
+      answer: `면적, ${joinItems(service.precheck, 2)}, 폐기물 양, 반출 동선, 원상복구 범위를 함께 확인해 견적 기준을 정리합니다.`,
+    },
+    {
+      question: `${regionName} 현장은 건물 관리실 협의가 필요한가요?`,
+      answer: `${regionName} 현장의 작업 시간, 엘리베이터 사용, 공용부 보호 기준은 건물마다 다를 수 있어 관리 기준을 먼저 확인하는 편이 좋습니다.`,
+    },
+    {
+      question: `${service.label} 폐기물은 어떻게 분류하나요?`,
+      answer: `${getWasteFocus(service)}처럼 성격이 다른 항목을 나누고, 반출 동선과 상차 순서를 현장 조건에 맞춰 정리합니다.`,
+    },
+    {
+      question: `${service.label} 원상복구 범위는 어떻게 확인하나요?`,
+      answer: `${regionName} ${service.label} 원상복구는 임대차 계약 조건과 관리실 기준을 보고 바닥, 벽, 천장, 설비 마감 중 보완이 필요한 부분을 확인합니다.`,
+    },
+  ];
+  const faq = service.faq.map((item, index) => ({
+    ...item,
+    question: normalizeSpaces(`${regionName} ${service.label} ${item.question}`),
+    answer: normalizeSpaces(
+      index % 2 === 0
+        ? `${item.answer} ${regionName} 현장의 ${regionGroup.titleFocus}도 함께 확인합니다.`
+        : `${item.answer} ${service.label} 작업 전에는 ${withObjectParticle(service.precheck[index % service.precheck.length])} 같이 봅니다.`,
+    ),
+  }));
+  const regionQuestion =
+    regionQuestions[stableIndex(`${seed}:regionFaqVariant`, regionQuestions.length)];
 
   faq.splice(stableIndex(`${seed}:regionFaq`, faq.length + 1), 0, regionQuestion);
 
