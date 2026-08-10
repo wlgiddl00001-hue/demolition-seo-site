@@ -51,6 +51,48 @@ function getStableVariant(seed: string, modulo: number) {
   return value % modulo;
 }
 
+function getTextFocus(text: string) {
+  return text
+    .split(/[.]/)[0]
+    .replace(/\s+/g, " ")
+    .replace(/^[^은는]+[은는]\s*/, "")
+    .trim();
+}
+
+function getCompactFocus(text: string) {
+  return getTextFocus(text)
+    .replace(/(합니다|됩니다|봅니다|줍니다|좋습니다|어렵습니다|필요합니다|확인해야 합니다)$/, "")
+    .trim();
+}
+
+function getIntroFollowup(page: PageData, seed: string) {
+  const scopeFocus = getTextFocus(page.철거범위);
+  const processFocus = getTextFocus(page.진행절차);
+  const estimateFocus = getTextFocus(page.비용안내);
+  const serviceLabel = getHeroServiceLabel(page.서비스);
+  const variants = [
+    `${page.지역} ${serviceLabel} 상담에서는 ${scopeFocus} 내용을 기준으로 현장 사진과 작업 가능 시간을 함께 확인합니다.`,
+    `${processFocus} 흐름을 미리 살피면 ${page.지역} 현장에서 필요한 철거 범위와 원상복구 확인 항목을 나누기 쉽습니다.`,
+    `${estimateFocus} 부분은 현장마다 달라질 수 있어 ${page.지역} ${serviceLabel} 상담에서 범위를 먼저 정리합니다.`,
+  ];
+
+  return variants[getStableVariant(`${seed}:intro-followup`, variants.length)];
+}
+
+function getBodyLead(page: PageData, seed: string) {
+  const featureFocus = getCompactFocus(page.현장특징);
+  const cautionFocus = getCompactFocus(page.주의사항);
+  const serviceLabel = getHeroServiceLabel(page.서비스);
+  const variants = [
+    `${page.메인키워드} 상담에서는 ${serviceLabel} 특성에 맞춰 작업 구역, 보존 설비, 폐기물 반출 순서를 먼저 나누고 ${featureFocus} 부분까지 함께 살핍니다.`,
+    `${page.지역} ${serviceLabel} 현장은 철거 대상과 남겨야 할 설비가 함께 있을 수 있어 ${cautionFocus} 기준을 상담 초반에 정리합니다.`,
+    `${page.메인키워드} 작업 범위는 현장 사진과 관리 기준을 함께 봐야 구체화되며, ${featureFocus} 항목을 확인하면 일정 조율이 수월합니다.`,
+    `${page.지역}에서 ${serviceLabel} 철거를 준비할 때는 폐기물 분류와 원상복구 확인 항목을 초반에 나누고 ${cautionFocus} 여부를 같이 봅니다.`,
+  ];
+
+  return variants[getStableVariant(`${seed}:body-lead`, variants.length)];
+}
+
 function getPageSeo(page: PageData, slug: string) {
   return {
     title: page.페이지제목,
@@ -171,6 +213,8 @@ export default async function ServicePage({ params }: Props) {
     sectionOrderVariants[getStableVariant(`${slug}:section-order`, sectionOrderVariants.length)];
   const heroTitle = page.H1 || `${page.지역} ${getHeroServiceLabel(page.서비스)} 상담 안내`;
   const heroDescription = page.본문요약 || page.메타설명;
+  const introFollowup = getIntroFollowup(page, slug);
+  const bodyLead = getBodyLead(page, slug);
   const seo = getPageSeo(page, slug);
   const regionUrl = `${BASE_URL}/${region}`;
   const faqJsonLd = createFaqPageJsonLd(getPageFaqItems(page));
@@ -274,7 +318,7 @@ export default async function ServicePage({ params }: Props) {
               <Link className="home-button home-button-primary" href="/#region-section">
                 지역별 철거 선택
               </Link>
-              <a className="home-button home-button-secondary" href="#regional-service-consultation">
+              <a className="home-button home-button-secondary" href="#consultation-section">
                 무료 견적 신청
               </a>
               <a className="home-button home-button-secondary" href="tel:010-8286-7620">
@@ -340,7 +384,7 @@ export default async function ServicePage({ params }: Props) {
               textAlign: "center",
             }}
           >
-            {page.본문요약}
+            {introFollowup}
           </p>
 
           <div style={{ margin: "48px 0" }}>
@@ -452,8 +496,7 @@ export default async function ServicePage({ params }: Props) {
   }}
 >
   <p className="service-page-body-copy">
-    {page.메인키워드} 상담은 현장 구조, 철거 대상, 반출 조건, 원상복구
-    마감 기준을 나누어 확인하는 방식으로 진행합니다.
+    {bodyLead}
   </p>
 
   {orderedSectionKeys.map((sectionKey) => (
@@ -507,7 +550,6 @@ export default async function ServicePage({ params }: Props) {
 </div> 
         </div>
       <ConsultationSection
-        id="regional-service-consultation"
         title={`${page.지역} ${getConsultationServiceName(page.서비스)} 상담 신청`}
       />
           </div>

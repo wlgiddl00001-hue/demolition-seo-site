@@ -388,26 +388,26 @@ const SERVICE_DATA: Record<string, ServiceSeoData> = {
     ],
   },
   "karaoke-room-demolition-company": {
-    label: "노래방",
-    title: "노래방 철거업체",
+    label: "노래연습장",
+    title: "노래연습장 철거업체",
     group: "soundRoom",
-    h1Focus: "룸 칸막이와 방음재",
-    equipment: ["방음재", "흡음재", "룸 칸막이", "음향 배선", "소방설비 주변 마감", "천장 구조"],
-    precheck: ["룸 개수", "방음재 두께", "소방설비 유지 범위", "지하층 반출 동선"],
+    h1Focus: "룸 구조와 흡음재",
+    equipment: ["흡음재", "룸 칸막이", "방음문", "음향 배선", "소방설비 주변 마감", "천장 구조"],
+    precheck: ["룸별 칸막이 구조", "흡음재 두께", "소방설비 유지 범위", "지하층 반출 동선"],
     waste: ["방음재 폐기물", "목재 칸막이", "음향 배선", "천장 마감재"],
-    scope: ["룸 칸막이 해체", "방음재 분리", "음향 장비 주변 정리", "폐기물 부피별 반출"],
-    process: ["소방설비 위치 확인", "음향 장비와 배선 분리", "룸별 칸막이 철거", "방음재와 천장 마감재 반출"],
+    scope: ["룸 칸막이 해체", "흡음재 분리", "방음문과 음향 배선 정리", "폐기물 부피별 반출"],
+    process: ["소방설비 위치 확인", "룸별 설비 보존 대상 표시", "칸막이와 방음문 철거", "흡음재와 천장 마감재 반출"],
     restoration:
-      "노래방 원상복구는 룸 철거 후 벽체와 천장 연결부, 소방설비 주변 손상, 바닥 단차를 함께 확인합니다.",
+      "노래연습장 원상복구는 룸 철거 후 벽체와 천장 연결부, 소방설비 주변 손상, 바닥 단차를 함께 확인합니다.",
     estimate:
-      "룸 수, 방음재 양, 지하층 여부, 음향 배선 범위, 폐기물 부피가 견적과 작업 기간에 영향을 줍니다.",
+      "룸 수, 흡음재 양, 방음문 철거 범위, 음향 배선 범위, 폐기물 부피가 견적과 작업 기간에 영향을 줍니다.",
     caution:
-      "소방설비와 방음 구조가 얽혀 있으면 유지해야 할 설비를 먼저 표시한 뒤 철거 범위를 나눠야 합니다.",
-    cta: "룸 수와 지하 여부, 방음재 상태를 알려주시면 반출 계획까지 상담합니다.",
+      "소방설비와 룸별 방음 구조가 얽혀 있으면 유지해야 할 설비를 먼저 표시한 뒤 철거 범위를 나눠야 합니다.",
+    cta: "룸 수와 흡음재 상태, 방음문 철거 범위를 알려주시면 반출 계획까지 상담합니다.",
     faq: [
-      { question: "방음재와 흡음재도 모두 철거할 수 있나요?", answer: "룸 구조와 폐기물 양을 확인해 철거 범위와 반출 순서를 안내합니다." },
+      { question: "룸 칸막이만 먼저 철거할 수 있나요?", answer: "룸 구조와 남겨야 할 설비를 확인해 부분 철거 범위와 반출 순서를 안내합니다." },
+      { question: "흡음재와 방음문도 철거 대상인가요?", answer: "설치 방식과 폐기물 양을 확인해 흡음재, 방음문, 칸막이 범위를 나눕니다." },
       { question: "소방설비는 유지해야 하나요?", answer: "건물 기준에 따라 유지할 설비가 있을 수 있어 위치와 연결 상태를 먼저 확인합니다." },
-      { question: "지하 노래방도 반출 상담이 가능한가요?", answer: "계단 폭, 엘리베이터 사용 가능 여부, 차량 정차 위치를 확인해 반출 계획을 세웁니다." },
       { question: "음향 배선과 조명도 정리하나요?", answer: "남길 회로와 철거할 배선을 구분해 안전하게 정리하는 방향으로 안내합니다." },
     ],
   },
@@ -415,24 +415,24 @@ const SERVICE_DATA: Record<string, ServiceSeoData> = {
     label: "노래방",
     title: "노래방 철거업체",
     group: "soundRoom",
-    h1Focus: "룸 칸막이와 방음재",
-    equipment: ["방음재", "흡음재", "룸 칸막이", "음향 배선", "소방설비 주변 마감", "천장 구조"],
-    precheck: ["룸 개수", "방음재 두께", "소방설비 유지 범위", "지하층 반출 동선"],
+    h1Focus: "영업장 내부와 방음재",
+    equipment: ["방음재", "룸 칸막이", "음향 배선", "조명 설비", "소방설비 주변 마감", "천장 구조"],
+    precheck: ["영업장 면적", "룸 개수", "음향 장비 보존 여부", "지하층 반출 동선"],
     waste: ["방음재 폐기물", "목재 칸막이", "음향 배선", "천장 마감재"],
-    scope: ["룸 칸막이 해체", "방음재 분리", "음향 장비 주변 정리", "폐기물 부피별 반출"],
-    process: ["소방설비 위치 확인", "음향 장비와 배선 분리", "룸별 칸막이 철거", "방음재와 천장 마감재 반출"],
+    scope: ["영업장 내부 철거", "방음재 분리", "음향 장비 주변 정리", "폐기물 부피별 반출"],
+    process: ["철거 범위 표시", "음향 장비와 배선 분리", "룸별 칸막이 철거", "방음재와 천장 마감재 반출"],
     restoration:
-      "노래방 원상복구는 룸 철거 후 벽체와 천장 연결부, 소방설비 주변 손상, 바닥 단차를 함께 확인합니다.",
+      "노래방 원상복구는 내부 철거 후 벽체와 천장 연결부, 소방설비 주변 손상, 바닥 단차를 함께 확인합니다.",
     estimate:
-      "룸 수, 방음재 양, 지하층 여부, 음향 배선 범위, 폐기물 부피가 견적과 작업 기간에 영향을 줍니다.",
+      "영업장 면적, 룸 수, 방음재 양, 음향 배선 범위, 폐기물 부피가 견적과 작업 기간에 영향을 줍니다.",
     caution:
-      "소방설비와 방음 구조가 얽혀 있으면 유지해야 할 설비를 먼저 표시한 뒤 철거 범위를 나눠야 합니다.",
-    cta: "룸 수와 지하 여부, 방음재 상태를 알려주시면 반출 계획까지 상담합니다.",
+      "영업장 내부에 유지해야 할 설비가 섞여 있으면 먼저 표시한 뒤 철거 범위를 나눠야 합니다.",
+    cta: "영업장 면적과 룸 수, 방음재 상태를 알려주시면 반출 계획까지 상담합니다.",
     faq: [
-      { question: "방음재와 흡음재도 모두 철거할 수 있나요?", answer: "룸 구조와 폐기물 양을 확인해 철거 범위와 반출 순서를 안내합니다." },
-      { question: "소방설비는 유지해야 하나요?", answer: "건물 기준에 따라 유지할 설비가 있을 수 있어 위치와 연결 상태를 먼저 확인합니다." },
+      { question: "내부 전체 철거도 상담할 수 있나요?", answer: "룸 구성과 남길 설비를 확인해 내부 철거 범위와 반출 순서를 안내합니다." },
+      { question: "음향 장비를 보존하면서 철거할 수 있나요?", answer: "보존 장비와 폐기 대상을 먼저 구분한 뒤 배선과 고정 부위를 확인합니다." },
       { question: "지하 노래방도 반출 상담이 가능한가요?", answer: "계단 폭, 엘리베이터 사용 가능 여부, 차량 정차 위치를 확인해 반출 계획을 세웁니다." },
-      { question: "음향 배선과 조명도 정리하나요?", answer: "남길 회로와 철거할 배선을 구분해 안전하게 정리하는 방향으로 안내합니다." },
+      { question: "간판과 조명도 같이 정리하나요?", answer: "설치 위치와 전기 연결 상태를 확인해 내부 철거와 함께 범위를 잡을 수 있습니다." },
     ],
   },
   "beer-pub-demolition-company": {
@@ -782,6 +782,29 @@ function getWasteFocus(service: ServiceSeoData) {
   return `${service.waste[0]}, ${service.waste[1]}`;
 }
 
+function toProcessPhrase(sentence: string) {
+  const text = normalizeSpaces(sentence).replace(/\.$/, "");
+  const replacements: Array<[RegExp, string]> = [
+    [/합니다$/, "하는 과정"],
+    [/봅니다$/, "보는 과정"],
+    [/됩니다$/, "되는 과정"],
+    [/살핍니다$/, "살피는 과정"],
+    [/정리합니다$/, "정리하는 과정"],
+    [/확인합니다$/, "확인하는 과정"],
+    [/나눕니다$/, "나누는 과정"],
+    [/줍니다$/, "주는 과정"],
+    [/둡니다$/, "두는 과정"],
+    [/잡습니다$/, "잡는 과정"],
+  ];
+  const converted = replacements.reduce<string | null>(
+    (result, [pattern, replacement]) =>
+      result ?? (pattern.test(text) ? text.replace(pattern, replacement) : null),
+    null,
+  );
+
+  return converted ?? `${text} 과정`;
+}
+
 function getRegionGroup(regionSlug: string) {
   return REGION_GROUPS[REGION_GROUP_BY_SLUG[regionSlug] ?? "residentialMixed"];
 }
@@ -843,7 +866,7 @@ function buildMetaDescription(regionName: string, service: ServiceSeoData, regio
   const templates = [
     `${regionName} ${service.label} 철거 상담은 ${equipment} 상태, ${withObjectParticle(regionGroup.titleFocus)} 함께 확인합니다. 폐기물 반출과 원상복구 범위를 정리해 안내합니다.`,
     `${regionName}에서 ${withObjectParticle(service.title)} 찾는다면 ${precheck}, 반출 동선, 작업 가능 시간을 먼저 살펴보세요. 현장 사진 기준으로 무료 상담을 도와드립니다.`,
-    `${service.label} 철거는 ${withAndParticle(equipment)} ${service.restoration.replace(/합니다\.$/, "하는 과정")}이 중요합니다. ${regionName} 현장 조건에 맞춰 견적 기준을 안내합니다.`,
+    `${service.label} 철거는 ${withAndParticle(equipment)} ${toProcessPhrase(service.restoration)}이 중요합니다. ${regionName} 현장 조건에 맞춰 견적 기준을 안내합니다.`,
     `${regionName} ${service.label} 현장의 ${regionGroup.access} ${withAndParticle(service.precheck[0])} 폐기물 정리 범위를 함께 확인해 상담합니다.`,
   ];
 
@@ -955,7 +978,7 @@ function buildFaq(regionName: string, service: ServiceSeoData, regionGroup: Regi
     question: normalizeSpaces(`${regionName} ${service.label} ${item.question}`),
     answer: normalizeSpaces(
       index % 2 === 0
-        ? `${item.answer} ${regionName} 현장의 ${regionGroup.titleFocus}도 함께 확인합니다.`
+        ? `${item.answer} ${regionName} 현장의 ${regionGroup.titleFocus}와 ${withObjectParticle(service.precheck[index % service.precheck.length])} 함께 확인합니다.`
         : `${item.answer} ${service.label} 작업 전에는 ${withObjectParticle(service.precheck[index % service.precheck.length])} 같이 봅니다.`,
     ),
   }));
@@ -965,6 +988,90 @@ function buildFaq(regionName: string, service: ServiceSeoData, regionGroup: Regi
   faq.splice(stableIndex(`${seed}:regionFaq`, faq.length + 1), 0, regionQuestion);
 
   return faq.slice(0, 4);
+}
+
+const pageSentenceFields = [
+  "본문요약",
+  "도입문",
+  "현장특징",
+  "철거범위",
+  "진행절차",
+  "비용안내",
+  "주의사항",
+  "FAQ1답변",
+  "FAQ2답변",
+  "FAQ3답변",
+  "FAQ4답변",
+] satisfies Array<keyof PageData>;
+
+function splitKoreanSentences(text: string) {
+  return text
+    .split(/(?<=\.)\s+/)
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length >= 24);
+}
+
+function getDuplicateSentenceReplacement({
+  field,
+  regionName,
+  service,
+  regionGroup,
+}: {
+  field: keyof PageData;
+  regionName: string;
+  service: ServiceSeoData;
+  regionGroup: RegionGroup;
+}) {
+  const replacements: Partial<Record<keyof PageData, string>> = {
+    본문요약: `${regionName} ${service.label} 상담 요약은 ${withAndParticle(regionGroup.titleFocus)} ${withObjectParticle(service.precheck[0])} 함께 보는 방향으로 정리합니다.`,
+    도입문: `${regionName} ${service.label} 상담 초반에는 ${withObjectParticle(joinItems(service.equipment, 2))} 확인해 작업 범위를 나눕니다.`,
+    현장특징: `${regionName} 현장 특징은 ${withAndParticle(service.precheck[0])} ${withObjectParticle(regionGroup.titleFocus)} 함께 살피는 방식으로 정리합니다.`,
+    철거범위: `${service.label} 철거 범위는 ${joinItems(service.scope, 2)} 항목과 원상복구 확인 범위를 나누어 봅니다.`,
+    진행절차: `${regionName} 진행 절차는 작업 가능 시간, 폐기물 반출 순서, 보존 설비 표시를 현장 조건에 맞춰 조율합니다.`,
+    비용안내: `${regionName} 견적 검토에서는 면적, 폐기물 양, 반출 거리, 공용부 사용 조건을 함께 반영합니다.`,
+    주의사항: `${regionName} 현장은 작업 전 보존 대상과 복구 기준을 다시 확인한 뒤 철거 범위를 정하는 편이 좋습니다.`,
+    FAQ1답변: `${service.label} 상담에서는 ${withObjectParticle(service.precheck[0])} 먼저 확인해 답변 범위를 정리합니다.`,
+    FAQ2답변: `${service.label} 작업 전에는 ${withObjectParticle(service.precheck[1])} 같이 살펴 세부 범위를 조율합니다.`,
+    FAQ3답변: `${regionName} 현장 조건에 맞춰 반출 동선과 원상복구 확인 항목을 함께 정리합니다.`,
+    FAQ4답변: `${service.label} 원상복구 기준은 임대차 조건과 현장 마감 상태를 비교해 확인합니다.`,
+  };
+
+  return replacements[field] ?? `${regionName} ${service.label} 상담에서는 현장 조건에 맞춰 세부 범위를 다시 확인합니다.`;
+}
+
+function dedupePageSentences(
+  page: PageData,
+  service: ServiceSeoData,
+  regionGroup: RegionGroup,
+): PageData {
+  const seenSentences = new Set<string>();
+  const nextPage = { ...page };
+
+  pageSentenceFields.forEach((field) => {
+    const text = String(nextPage[field] ?? "");
+    let updatedText = text;
+
+    splitKoreanSentences(text).forEach((sentence) => {
+      if (!seenSentences.has(sentence)) {
+        seenSentences.add(sentence);
+        return;
+      }
+
+      const replacement = getDuplicateSentenceReplacement({
+        field,
+        regionName: nextPage.지역,
+        service,
+        regionGroup,
+      });
+
+      updatedText = updatedText.replace(sentence, replacement);
+      seenSentences.add(replacement);
+    });
+
+    nextPage[field] = normalizeSpaces(updatedText);
+  });
+
+  return nextPage;
 }
 
 export function enhanceRegionalSeoCopy(page: PageData): PageData {
@@ -981,7 +1088,7 @@ export function enhanceRegionalSeoCopy(page: PageData): PageData {
   const faq = buildFaq(regionName, service, regionGroup, seed);
   const 메인키워드 = `${regionName} ${service.title}`;
 
-  return {
+  const enhancedPage = {
     ...page,
     지역: regionName,
     서비스: service.title,
@@ -1005,4 +1112,6 @@ export function enhanceRegionalSeoCopy(page: PageData): PageData {
     FAQ4질문: normalizeSpaces(faq[3].question),
     FAQ4답변: normalizeSpaces(faq[3].answer),
   };
+
+  return dedupePageSentences(enhancedPage, service, regionGroup);
 }

@@ -227,15 +227,7 @@ function findRegionPages(pagesByRegion: PagesByRegion, district: string) {
     return relaxedMatch;
   }
 
-  return pagesByRegion.find(({ region }) => {
-    const normalizedRegion = normalizeRegionName(region);
-    const relaxedRegion = normalizeRegionNameForMatch(region);
-
-    return (
-      normalizedRegion.endsWith(normalizedDistrict) ||
-      relaxedRegion.endsWith(relaxedDistrict)
-    );
-  });
+  return undefined;
 }
 
 function toPageHref(pageSlug: string) {

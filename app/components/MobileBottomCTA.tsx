@@ -18,7 +18,7 @@ export default function MobileBottomCTA() {
           전화 상담
         </a>
         <a
-          href={phoneHref}
+          href="#consultation-section"
           className={`${buttonClass} border border-emerald-300/70 bg-white text-slate-950 hover:bg-emerald-50`}
         >
           무료 견적 문의
