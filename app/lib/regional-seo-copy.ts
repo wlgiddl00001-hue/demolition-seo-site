@@ -782,27 +782,67 @@ function getWasteFocus(service: ServiceSeoData) {
   return `${service.waste[0]}, ${service.waste[1]}`;
 }
 
-function toProcessPhrase(sentence: string) {
-  const text = normalizeSpaces(sentence).replace(/\.$/, "");
-  const replacements: Array<[RegExp, string]> = [
-    [/합니다$/, "하는 과정"],
-    [/봅니다$/, "보는 과정"],
-    [/됩니다$/, "되는 과정"],
-    [/살핍니다$/, "살피는 과정"],
-    [/정리합니다$/, "정리하는 과정"],
-    [/확인합니다$/, "확인하는 과정"],
-    [/나눕니다$/, "나누는 과정"],
-    [/줍니다$/, "주는 과정"],
-    [/둡니다$/, "두는 과정"],
-    [/잡습니다$/, "잡는 과정"],
-  ];
-  const converted = replacements.reduce<string | null>(
-    (result, [pattern, replacement]) =>
-      result ?? (pattern.test(text) ? text.replace(pattern, replacement) : null),
-    null,
-  );
+function joinItemsWithAnd(items: string[], count = 2) {
+  const selectedItems = items.slice(0, count);
 
-  return converted ?? `${text} 과정`;
+  if (selectedItems.length <= 1) {
+    return selectedItems[0] ?? "";
+  }
+
+  const lastItem = selectedItems[selectedItems.length - 1];
+  const previousItems = selectedItems.slice(0, -1);
+  const previousText = previousItems.join(", ");
+
+  if (/[와과]/.test(lastItem)) {
+    return `${previousText}, ${lastItem}`;
+  }
+
+  return `${withAndParticle(previousText)} ${lastItem}`;
+}
+
+function getMetaPrecheckItems(precheck: string) {
+  const items = [
+    precheck,
+    precheck.includes("반출 동선") ? "" : "반출 동선",
+    "작업 가능 시간",
+  ].filter(Boolean);
+
+  return items.join(", ");
+}
+
+function getRestorationDetail(service: ServiceSeoData) {
+  const text = normalizeSpaces(service.restoration).replace(/\.$/, "");
+  const serviceTitleLabel = service.title.replace(/\s*철거업체$/g, "").trim();
+  const prefixes = Array.from(
+    new Set([
+      `${service.label} 원상복구는 `,
+      `${serviceTitleLabel} 원상복구는 `,
+      "원상복구는 ",
+    ]),
+  );
+  const detail =
+    prefixes.reduce<string | null>(
+      (result, prefix) =>
+        result ?? (text.startsWith(prefix) ? text.slice(prefix.length) : null),
+      null,
+    ) ?? text;
+  const leadingDemolitionPhrases = Array.from(
+    new Set([
+      `${service.label} 철거 후에는 `,
+      `${serviceTitleLabel} 철거 후에는 `,
+      `${service.label} 철거 후 `,
+      `${serviceTitleLabel} 철거 후 `,
+      "철거 후에는 ",
+    ]),
+  );
+  const normalizedDetail =
+    leadingDemolitionPhrases.reduce<string | null>(
+      (result, prefix) =>
+        result ?? (detail.startsWith(prefix) ? `철거 후 ${detail.slice(prefix.length)}` : null),
+      null,
+    ) ?? detail;
+
+  return `${normalizedDetail}.`;
 }
 
 function getRegionGroup(regionSlug: string) {
@@ -865,8 +905,8 @@ function buildMetaDescription(regionName: string, service: ServiceSeoData, regio
   const precheck = service.precheck[stableIndex(`${seed}:precheck`, service.precheck.length)];
   const templates = [
     `${regionName} ${service.label} 철거 상담은 ${equipment} 상태, ${withObjectParticle(regionGroup.titleFocus)} 함께 확인합니다. 폐기물 반출과 원상복구 범위를 정리해 안내합니다.`,
-    `${regionName}에서 ${withObjectParticle(service.title)} 찾는다면 ${precheck}, 반출 동선, 작업 가능 시간을 먼저 살펴보세요. 현장 사진 기준으로 무료 상담을 도와드립니다.`,
-    `${service.label} 철거는 ${withAndParticle(equipment)} ${toProcessPhrase(service.restoration)}이 중요합니다. ${regionName} 현장 조건에 맞춰 견적 기준을 안내합니다.`,
+    `${regionName}에서 ${withObjectParticle(service.title)} 찾는다면 ${getMetaPrecheckItems(precheck)}을 먼저 살펴보세요. 현장 사진 기준으로 무료 상담을 도와드립니다.`,
+    `${service.label} 철거에서는 ${joinItemsWithAnd(service.equipment, 2)}의 철거 범위를 먼저 확인합니다. 원상복구 시에는 ${getRestorationDetail(service)} ${regionName} 현장 조건에 맞춰 견적 기준을 안내합니다.`,
     `${regionName} ${service.label} 현장의 ${regionGroup.access} ${withAndParticle(service.precheck[0])} 폐기물 정리 범위를 함께 확인해 상담합니다.`,
   ];
 
