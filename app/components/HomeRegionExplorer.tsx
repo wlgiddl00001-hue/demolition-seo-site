@@ -267,6 +267,14 @@ function getDisplayRegionName(region: string) {
     .replace(/울산(중구|남구|동구|북구|울주군)/g, "$1");
 }
 
+function getMainRegionDisplayName(label: string) {
+  const regionName = label.replace(/\s*철거 상담$/g, "").trim();
+
+  return regionName
+    .replace(/^(인천|부산|대구|대전|광주|울산)(.+)$/g, "$1 $2")
+    .replace(/^경기광주$/g, "경기 광주");
+}
+
 function createAnchorSlug(region: Region, district: string, index: number) {
   return `${region}-${normalizeRegionName(district)}-${index}`;
 }
@@ -401,15 +409,29 @@ export default function HomeRegionExplorer({
         <div className="home-shell">
           <div className="home-section-header">
             <p className="home-eyebrow">지역별 상담</p>
-            <h2 id="main-region-links-title">주요 지역 철거 상담 바로가기</h2>
+            <h2 id="main-region-links-title">주요 지역 철거·원상복구 상담</h2>
           </div>
           <div className="home-link-grid">
-            {mainRegionLinks.map((link) => (
-              <a className="home-service-link" href={link.href} key={link.href}>
-                <span>{link.label}</span>
-                {link.description ? <small>{link.description}</small> : null}
-              </a>
-            ))}
+            {mainRegionLinks.map((link) => {
+              const displayName = getMainRegionDisplayName(link.label);
+
+              return (
+                <a
+                  aria-label={`${displayName} 철거·원상복구 안내 페이지로 이동`}
+                  className="home-service-link home-main-region-card"
+                  href={link.href}
+                  key={link.href}
+                >
+                  <span className="home-main-region-card-copy">
+                    <strong>{displayName}</strong>
+                    <small>철거·원상복구 안내</small>
+                  </span>
+                  <span className="home-main-region-card-arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -776,28 +776,66 @@ img {
 
 .home-main-region-links .home-link-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 
-.home-main-region-links .home-service-link {
-  min-height: 68px;
+.home-main-region-card {
+  min-height: 86px;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-content: center;
-  justify-items: center;
-  padding: 12px 16px;
-  text-align: center;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 18px 18px 20px;
+  text-align: left;
   box-shadow: none;
 }
 
-.home-main-region-links .home-service-link span {
-  font-size: 16px;
-  line-height: 1.35;
+.home-main-region-card-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.home-main-region-card-copy strong {
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
-.home-main-region-links .home-service-link:hover {
-  background: #f8fafc;
+.home-main-region-card-copy small {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.home-main-region-card-arrow {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: var(--accent-dark);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.home-main-region-card:hover,
+.home-main-region-card:focus-visible {
+  border-color: #fdba74;
+  background: #fff7ed;
   box-shadow: none;
-  transform: none;
+  transform: translateY(-1px);
+}
+
+.home-main-region-card:hover .home-main-region-card-arrow,
+.home-main-region-card:focus-visible .home-main-region-card-arrow {
+  background: #fed7aa;
 }
 
 .common-service-page {
@@ -1170,7 +1208,7 @@ img {
   }
 
   .home-main-region-links .home-link-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .home-process-list {
@@ -1345,12 +1383,12 @@ img {
   }
 
   .home-main-region-links .home-link-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
-  .home-main-region-links .home-service-link {
-    min-height: 58px;
-    padding: 10px 12px;
+  .home-main-region-card {
+    min-height: 78px;
+    padding: 16px;
   }
 
   .home-privacy p {
