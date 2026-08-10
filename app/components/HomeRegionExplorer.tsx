@@ -167,12 +167,36 @@ const districtsByRegion: Record<Region, readonly string[]> = {
 const pendingMessage = "해당 지역 정보는 순차적으로 추가될 예정입니다.";
 
 const strengths = [
-  "현장 상황에 맞춘 견적 안내",
-  "철거부터 폐기물 정리까지",
-  "일정에 맞춘 작업 진행",
-  "작업 후 깔끔한 마무리",
-  "업종별 철거 범위 확인",
-  "전화 상담부터 현장 확인까지",
+  {
+    title: "현장 상황에 맞춘 견적 안내",
+    description:
+      "현장 구조와 철거 범위, 폐기물 양, 장비 진입 조건을 확인하여 필요한 작업과 예상 견적을 안내합니다.",
+  },
+  {
+    title: "철거부터 폐기물 정리까지",
+    description:
+      "내부 시설 철거부터 발생한 폐기물의 분류와 반출까지 현장 상황에 맞춰 순서대로 진행합니다.",
+  },
+  {
+    title: "일정에 맞춘 작업 진행",
+    description:
+      "임대차 종료일과 매장 이전·폐업 일정을 확인한 뒤 현장 여건에 맞는 작업 일정을 조율합니다.",
+  },
+  {
+    title: "작업 후 깔끔한 마무리",
+    description:
+      "철거가 끝난 뒤 남은 자재와 폐기물을 정리하고 요청받은 원상복구 범위를 함께 확인합니다.",
+  },
+  {
+    title: "업종별 철거 범위 확인",
+    description:
+      "식당·카페·사무실·학원 등 업종별 시설과 설비를 살펴 필요한 철거 항목을 구분해 안내합니다.",
+  },
+  {
+    title: "전화 상담부터 현장 확인까지",
+    description:
+      "전화로 지역과 업종, 철거 범위를 먼저 확인하고 필요한 경우 현장 상태를 살펴 구체적인 견적을 안내합니다.",
+  },
 ];
 
 function normalizeRegionName(region: string) {
@@ -406,12 +430,9 @@ export default function HomeRegionExplorer({
           </div>
           <div className="home-card-grid home-card-grid-3">
             {strengths.map((strength) => (
-              <article className="home-strength-card" key={strength}>
-                <h3>{strength}</h3>
-                <p>
-                  현장 조건과 일정, 복구 기준을 먼저 살펴 불필요한 작업을 줄이고
-                  필요한 부분을 분명하게 안내합니다.
-                </p>
+              <article className="home-strength-card" key={strength.title}>
+                <h3>{strength.title}</h3>
+                <p>{strength.description}</p>
               </article>
             ))}
           </div>
