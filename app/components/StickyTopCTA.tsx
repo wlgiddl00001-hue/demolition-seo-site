@@ -1,35 +1,20 @@
-"use client";
-
 export default function StickyTopCTA() {
-  const scrollToId = (id: string) => {
-    const el = document.getElementById(id);
-
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
-
   return (
-    <div className="sticky-top-cta">
+    <nav className="sticky-top-cta" aria-label="주요 상담 바로가기">
       <div className="sticky-top-cta-inner">
-        <button
-          type="button"
+        <a
           className="sticky-top-cta-button sticky-top-cta-region"
-          onClick={() => scrollToId("region-section")}
+          href="/#region-section"
         >
           지역별 철거 선택
-        </button>
+        </a>
 
-        <button
-          type="button"
+        <a
           className="sticky-top-cta-button sticky-top-cta-primary"
-          onClick={() => scrollToId("consultation-section")}
+          href="#consultation-section"
         >
           무료 견적 신청
-        </button>
+        </a>
 
         <a
           href="tel:01082867620"
@@ -38,14 +23,13 @@ export default function StickyTopCTA() {
           010-8286-7620 전화 상담
         </a>
 
-        <button
-          type="button"
+        <a
           className="sticky-top-cta-button sticky-top-cta-service"
-          onClick={() => scrollToId("services-section")}
+          href="/#services-section"
         >
           업종별 서비스
-        </button>
+        </a>
       </div>
-    </div>
+    </nav>
   );
 }

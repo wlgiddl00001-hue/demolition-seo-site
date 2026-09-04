@@ -199,6 +199,29 @@ const strengths = [
   },
 ];
 
+const quickGuideCards = [
+  {
+    category: "업종별 철거",
+    description: "업종에 맞는 철거 범위 확인",
+    href: "#services-section",
+  },
+  {
+    category: "원상복구",
+    description: "임대차 반환 기준 알아보기",
+    href: "/restoration",
+  },
+  {
+    category: "폐업 철거",
+    description: "폐업 전 철거 준비사항 확인",
+    href: "/business-closure-demolition",
+  },
+  {
+    category: "폐업지원 안내",
+    description: "지원 제도와 준비서류 확인",
+    href: "/business-closure-support-guide",
+  },
+];
+
 function normalizeRegionName(region: string) {
   return region.trim().replace(/\s+/g, "");
 }
@@ -354,35 +377,17 @@ export default function HomeRegionExplorer({
               양, 장비 진입 조건, 작업 일정에 맞춰 상가철거와 원상복구 견적 및
               진행 절차를 안내합니다.
             </p>
-            <div className="home-hero-actions" aria-label="철거 안내 바로가기">
-  <a
-    className="home-button home-button-primary"
-    href="#services-section"
-  >
-    업종별 철거 알아보기
-  </a>
-
-  <a
-    className="home-button home-button-secondary"
-    href="/restoration"
-  >
-    원상복구 안내
-  </a>
-
-  <a
-    className="home-button home-button-secondary"
-    href="/business-closure-demolition"
-  >
-    폐업 철거 안내
-  </a>
-
-  <a
-    className="home-button home-button-accent-soft"
-    href="/business-closure-support-guide"
-  >
-    폐업지원금 안내
-  </a>
-</div>
+            <div className="home-quick-guide-grid" aria-label="빠른 안내">
+              {quickGuideCards.map((card) => (
+                <a className="home-quick-guide-card" href={card.href} key={card.href}>
+                  <span className="home-quick-guide-category">{card.category}</span>
+                  <strong>{card.description}</strong>
+                  <span className="home-quick-guide-arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
           <ConsultationChecklist
             className="home-hero-checklist"

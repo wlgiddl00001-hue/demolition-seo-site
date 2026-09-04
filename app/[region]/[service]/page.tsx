@@ -314,18 +314,22 @@ export default async function ServicePage({ params }: Props) {
             <p className="home-eyebrow">{page.지역} · {page.서비스}</p>
             <h1 id="regional-hero-title">{heroTitle}</h1>
             <p className="home-hero-description">{heroDescription}</p>
-            <div className="home-hero-actions" aria-label="상단 바로가기">
-              <Link className="home-button home-button-primary" href="/#region-section">
-                지역별 철거 선택
+            <div className="detail-hero-link-grid" aria-label="상세 안내 링크">
+              <Link className="detail-hero-link-card" href="/#region-section">
+                <span>지역 비교</span>
+                <strong>다른 지역 철거 페이지도 함께 확인</strong>
               </Link>
-              <a className="home-button home-button-secondary" href="#consultation-section">
-                무료 견적 신청
+              <a className="detail-hero-link-card" href="#consultation-section">
+                <span>견적 준비</span>
+                <strong>현장 정보를 남기고 상담 신청</strong>
               </a>
-              <a className="home-button home-button-secondary" href="tel:010-8286-7620">
-                010-8286-7620 전화 상담
+              <a className="detail-hero-link-card" href="tel:010-8286-7620">
+                <span>전화 상담</span>
+                <strong>010-8286-7620 빠른 연결</strong>
               </a>
-              <Link className="home-button home-button-accent-soft" href="/#services-section">
-                업종별 서비스
+              <Link className="detail-hero-link-card" href="/#services-section">
+                <span>업종 전체</span>
+                <strong>업종별 철거 범위 둘러보기</strong>
               </Link>
             </div>
           </div>
