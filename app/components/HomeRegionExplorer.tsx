@@ -354,20 +354,35 @@ export default function HomeRegionExplorer({
               양, 장비 진입 조건, 작업 일정에 맞춰 상가철거와 원상복구 견적 및
               진행 절차를 안내합니다.
             </p>
-            <div className="home-hero-actions" aria-label="상단 바로가기">
-              <a className="home-button home-button-primary" href="#region-section">
-                지역별 철거 선택
-              </a>
-              <a className="home-button home-button-secondary" href="#consultation-section">
-                무료 견적 신청
-              </a>
-              <a className="home-button home-button-secondary" href="tel:010-8286-7620">
-                010-8286-7620 전화 상담
-              </a>
-              <a className="home-button home-button-accent-soft" href="#services-section">
-                업종별 서비스
-              </a>
-            </div>
+            <div className="home-hero-actions" aria-label="철거 안내 바로가기">
+  <a
+    className="home-button home-button-primary"
+    href="#services-section"
+  >
+    업종별 철거 알아보기
+  </a>
+
+  <a
+    className="home-button home-button-secondary"
+    href="/restoration"
+  >
+    원상복구 안내
+  </a>
+
+  <a
+    className="home-button home-button-secondary"
+    href="/business-closure-demolition"
+  >
+    폐업 철거 안내
+  </a>
+
+  <a
+    className="home-button home-button-accent-soft"
+    href="/business-closure-support-guide"
+  >
+    폐업지원금 안내
+  </a>
+</div>
           </div>
           <ConsultationChecklist
             className="home-hero-checklist"

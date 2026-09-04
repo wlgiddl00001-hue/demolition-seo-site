@@ -18,7 +18,7 @@ export default function StickyTopCTA() {
         <button
           type="button"
           className="sticky-top-cta-button sticky-top-cta-region"
-          onClick={() => scrollToId("region")}
+          onClick={() => scrollToId("region-section")}
         >
           지역별 철거 선택
         </button>
@@ -26,7 +26,7 @@ export default function StickyTopCTA() {
         <button
           type="button"
           className="sticky-top-cta-button sticky-top-cta-primary"
-          onClick={() => scrollToId("consult")}
+          onClick={() => scrollToId("consultation-section")}
         >
           무료 견적 신청
         </button>
@@ -41,7 +41,7 @@ export default function StickyTopCTA() {
         <button
           type="button"
           className="sticky-top-cta-button sticky-top-cta-service"
-          onClick={() => scrollToId("services")}
+          onClick={() => scrollToId("services-section")}
         >
           업종별 서비스
         </button>
