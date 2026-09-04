@@ -1429,3 +1429,92 @@ img {
     grid-template-columns: 1fr;
   }
 }
+/* ===== 상단 고정 CTA ===== */
+.sticky-top-cta {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.sticky-top-cta-inner {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 10px 0;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sticky-top-cta-button {
+  min-height: 48px;
+  padding: 10px 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 12px;
+
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.sticky-top-cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
+}
+
+.sticky-top-cta-region {
+  background: #f59e0b;
+  color: #111827;
+}
+
+.sticky-top-cta-primary {
+  background: #111827;
+  color: #ffffff;
+}
+
+.sticky-top-cta-phone {
+  background: #111827;
+  color: #ffffff;
+}
+
+.sticky-top-cta-service {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .sticky-top-cta-inner {
+    width: calc(100% - 20px);
+    padding: 8px 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .sticky-top-cta-button {
+    min-height: 44px;
+    padding: 9px 8px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+}
